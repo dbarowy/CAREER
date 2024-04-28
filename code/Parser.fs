@@ -2,9 +2,6 @@ module Parser
 
 open Combinator
 
-// TODO: fix bug where if command is in middle of string parser doesn't recognize command
-// maybe add some character indicator that a command is coming that isn't accepted in a string, like * or $ or /
-
 let DEBUG = false
 
 type Expression = Lines of Line list
@@ -20,21 +17,33 @@ and Modifier = string * (FormattedText list)
 let expr, exprImpl = recparser ()
 let formattedText, formattedTextImpl = recparser ()
 
-let goodChar = pletter <|> pdigit <|> (pchar ' ') <!> "goodChar"
+let ppunc =
+    pchar '.'
+    <|> pchar '?'
+    <|> pchar '!'
+    <|> pchar ','
+    <|> pchar '-'
+    <|> pchar '—'
+    <|> pchar ':'
+    <|> pchar ';'
+
+let goodChar = pletter <|> pdigit <|> ppunc <|> (pchar ' ') <!> "goodChar"
 let pgoodstr = pmany1 goodChar |>> stringify |>> String <!> "pgoodstr"
 
 let modifierFunction =
-    pstr ("HEADER")
-    <|> pstr ("HEADER_LEFT")
-    <|> pstr ("HEADER_RIGHT")
-    <|> pstr ("GENERIC_SECTION")
-    <|> pstr ("TITLE_CENTER")
-    <|> pstr ("TITLE_LEFT")
-    <|> pstr ("TITLE_RIGHT")
-    <|> pstr ("ITEM")
-    <|> pstr ("BOLD")
-    <|> pstr ("UNDERLINE")
-    <!> "modifierFunction"
+    pright
+        (pchar '*')
+        (pstr ("HEADER")
+         <|> pstr ("HEADER_LEFT")
+         <|> pstr ("HEADER_RIGHT")
+         <|> pstr ("GENERIC_SECTION")
+         <|> pstr ("TITLE_CENTER")
+         <|> pstr ("TITLE_LEFT")
+         <|> pstr ("TITLE_RIGHT")
+         <|> pstr ("ITEM")
+         <|> pstr ("BOLD")
+         <|> pstr ("UNDERLINE")
+         <!> "modifierFunction")
 
 let limitedFormattedText = pbetween (pchar '"') (pmany1 formattedText) (pchar '"')
 

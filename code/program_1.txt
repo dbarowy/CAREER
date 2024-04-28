@@ -1,6 +1,6 @@
-ITEM BOLD "testing item" creation and generation
-ITEM BOLD "hello" world
-ITEM line 2
+*ITEM *BOLD "testing item" creation and generation
+*ITEM *BOLD "hello" world
+*ITEM line 2
 line 3
-UNDERLINE BOLD line test
-just a lot of text BOLD test
+*UNDERLINE *BOLD line test
+*ITEM just a lot of text, *BOLD "some bold text," then normal text again

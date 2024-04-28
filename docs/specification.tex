@@ -74,23 +74,23 @@ The main goal of CAREER's design is to be easily readable and modifiable by the 
 \end{center}
 This example program shows how one could create a complete, basic resume using CAREER. This resume includes a title, contact information, and multiple unique sections. Each of these sections has multipe titles with different alignments, as well as bullet point items. While this resume is slightly long, it is easily readable and modifiable. It is easy to imagine how a resulting resume would look based on this code. \\
 ~\\
-HEADER Harry Albert \\
-HEADER\_LEFT (111)111-1111 \\
-HEADER\_RIGHT hsa1@williams.edu \\
+*HEADER Harry Albert \\
+*HEADER\_LEFT (111)111-1111 \\
+*HEADER\_RIGHT hsa1@williams.edu \\
 ~\\
-EDUCATION\\
-TITLE\_LEFT Williamstown, MA \\
-TITLE\_CENTER Williams College \\
-TITLE\_RIGHT Fall 2021 - May 2025 \\
-ITEM Teaching Assistant for introductory and upper-level CS courses \\
-ITEM Activities include PAC Comedy Club, Opinions Columnist for the Williams Record Newspaper \\
+*EDUCATION\\
+*TITLE\_LEFT Williamstown, MA \\
+*TITLE\_CENTER Williams College \\
+*TITLE\_RIGHT Fall 2021 - May 2025 \\
+*ITEM Teaching Assistant for introductory and upper-level CS courses \\
+*ITEM Activities include PAC Comedy Club, Opinions Columnist for the Williams Record Newspaper \\
 ~\\
-EMPLOYMENT\\
-TITLE\_LEFT Software Engineer, Intern \\
-TITLE\_CENTER Bubble \\
-TITLE\_RIGHT SUMMER 2023 \\
-ITEM Bubble is a no-code web development platform. I worked on the Growth Team \\
-ITEM Contributed to multiple successful experiments, including improving the editor UI and user journey \\
+*EMPLOYMENT\\
+*TITLE\_LEFT Software Engineer, Intern \\
+*TITLE\_CENTER Bubble \\
+*TITLE\_RIGHT Summer 2023 \\
+*ITEM Bubble is a no-code web development platform. I worked on the Growth Team \\
+*ITEM Contributed to multiple successful experiments, including improving the editor UI and user journey \\
 ~\\
 \noindent\rule{16.2cm}{0.4pt} \\
 \begin{center}
@@ -98,45 +98,45 @@ ITEM Contributed to multiple successful experiments, including improving the edi
 \end{center}
 This example program is similar to the previous program. However, it adds on the idea of generic sections. Having built in commands for common sections like employment and education is great, but there should still be room for the user to create some of their own generic sections. This idea of generic types can and should be extended to other aspects of the CAREER language. \\
 ~\\
-HEADER Harry Albert \\
-HEADER\_LEFT (111)111-1111 \\
-HEADER\_RIGHT hsa1@williams.edu \\
+*HEADER Harry Albert \\
+*HEADER\_LEFT (111)111-1111 \\
+*HEADER\_RIGHT hsa1@williams.edu \\
 ~\\
-GENERIC\_SECTION Languages \& Technologies\\
-ITEM Javascript/Typescript, Python, HTML + CSS, F\#, Java, C \\
-ITEM React, Scikit-Learn, PyTorch, SolidJS, REST APIs \\
+*GENERIC\_SECTION Languages \& Technologies\\
+*ITEM Javascript/Typescript, Python, HTML + CSS, F\#, Java, C \\
+*ITEM React, Scikit-Learn, PyTorch, SolidJS, REST APIs \\
 ~\\
-GENERIC\_SECTION Projects\\
-ITEM BOLD "ML Lung Cancer Prediction Tool": Created a neural network to predict lung cancer based on several easily self-diagnosable conditions. Published website where users can interact with this model to democratize access and allow users to play with the model. \\
-ITEM BOLD "Booktrak": Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. \\
+*GENERIC\_SECTION Projects\\
+*ITEM *BOLD "ML Lung Cancer Prediction Tool": Created a neural network to predict lung cancer based on several easily self-diagnosable conditions. Published website where users can interact with this model to democratize access and allow users to play with the model. \\
+*ITEM *BOLD "Booktrak": Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. \\
 \noindent\rule{16.2cm}{0.4pt} \\
 \begin{center}
 	\textbf{Example 3:}
 \end{center}
 This example program introduces the idea of a resume as a work in progress. To facilitate continued work on resumes, CAREER supports comments. These comments allow users to write out future todo lists, planned modifications, or other general notes. \\
 ~\\
-HEADER Harry Albert \\
-HEADER\_LEFT (111)111-1111 \\
-HEADER\_RIGHT hsa1@williams.edu \\
+*HEADER Harry Albert \\
+*HEADER\_LEFT (111)111-1111 \\
+*HEADER\_RIGHT hsa1@williams.edu \\
 \textbackslash\textbackslash\enspace TODO: add in website link here
 ~\\
-GENERIC\_SECTION Languages \& Technologies \\
-ITEM Javascript/Typescript, Python, HTML + CSS, Java, C \textbackslash\textbackslash\enspace remember to add on F\# when I'm done with PL \\
-ITEM React, Scikit-Learn, PyTorch, SolidJS, REST APIs \\
+*GENERIC\_SECTION Languages \& Technologies \\
+*ITEM Javascript/Typescript, Python, HTML + CSS, Java, C \textbackslash\textbackslash\enspace remember to add on F\# when I'm done with PL \\
+*ITEM React, Scikit-Learn, PyTorch, SolidJS, REST APIs \\
 ~\\
-GENERIC\_SECTION Projects \\
-ITEM BOLD "ML Lung Cancer Prediction Tool": Created a neural network to predict lung cancer based on several easily self-diagnosable conditions. Published website where users can interact with this model to democratize access and allow users to play with the model. \textbackslash\textbackslash\enspace Remember to bring this up in job interviews as an example of ML experience \\
-\hspace{\parindent} ITEM BOLD "Booktrak": Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. \\
+*GENERIC\_SECTION Projects \\
+*ITEM *BOLD "ML Lung Cancer Prediction Tool": Created a neural network to predict lung cancer based on several easily self-diagnosable conditions. Published website where users can interact with this model to democratize access and allow users to play with the model. \textbackslash\textbackslash\enspace Remember to bring this up in job interviews as an example of ML experience \\
+*ITEM *BOLD "Booktrak": Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. \\
 
 \subsection*{Language Concepts}
-The core concept of this language is that there are modifiers and text. Text is a primitive, and it is defined as any string that is not a modifier. For example,  in the line "HEADER Harry Albert," "Harry Albert" is the text. Modifiers are (conventionally all caps) functions that change how text is displayed. For example, the GENERIC\_SECTION modifier bolds the text that follows it and adds a horizontal line above it to indicate a new section. Ideally, users will be able to create their own modifiers to make the language more groweable. Finally, modifiers can be stacked. For example, ITEM creates a bullet pointed text, and BOLD (used within an item) creates a bolded piece of text. When quotes are included after a modifier, the modifier will apply to all the text included in the quotes. If quotes are not included, the modifier will apply to all text until a new line.
+The core concept of this language is that there are modifiers and text. Text is a primitive, and it is defined as any string that is not a modifier. For example,  in the line "HEADER Harry Albert," "Harry Albert" is the text. Modifiers are (conventionally all caps) functions, indiciated by *, that change how text is displayed. For example, the GENERIC\_SECTION modifier bolds the text that follows it and adds a horizontal line above it to indicate a new section. Ideally, users will be able to create their own modifiers to make the language more groweable. Finally, modifiers can be stacked. For example, ITEM creates a bullet pointed text, and BOLD (used within an item) creates a bolded piece of text. When quotes are included after a modifier, the modifier will apply to all the text included in the quotes. If quotes are not included, the modifier will apply to all text until a new line.
 
 \subsection*{Formal Syntax}
 
 $<$expression$>$ = $<$line$>$$[<$expression$>]$\\
 $<$line$>$ = $<$formatted\_text$>^*$ \textbackslash n\\
 $<$formatted\_text$>$ = $<$modifier$> | <$string$>$\\
-$<$modifier$>$ = $<$mod\_fun$>$\textvisiblespace"$<$formatted\_text$>^*$" $| <$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^*$ \\
+$<$modifier$>$ = *$<$mod\_fun$>$\textvisiblespace"$<$formatted\_text$>^*$" $| <$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^*$ \\
 $<$mod\_fun$>$ = HEADER
 	$|$ HEADER\_LEFT
 	$|$ HEADER\_RIGHT
@@ -152,14 +152,15 @@ $<$string$>$ =  $<$str\_char$>^*$ \\
 $<$str\_char$>$ = $<$letter$> | <$number$> | $ \textvisiblespace\\
 $<$letter$>$ = $\alpha \in \{a, ..., z\}$ \\
 $<$number$>$ = $\alpha \in \{0, ..., 9\}$\\
+$<$punctuation$>$ = $\alpha \in \{$'.', '?', '!', ',', '-', '—', ':', ';'$\}$\\
 ~\\
 
 \subsection*{Semantics}
-CAREER is essentially composed of many lines of strings. Thus, the primitive form in CAREER can be thought of as either a character or a string (a list of characters), depending on how deep you want to go into the program implementation. Basic strings can only be composed of numbers, letters, and spaces (this is a potential shortcoming that could be improved in the future). Modifier function strings (which are used as commands for text formatting) can have any character. However, all of these function strings are defined within the definition of CAREER itself, instead of in an actual CAREER program. Modifier function strings are all uppercase and snake case by convention. \\
+CAREER is essentially composed of many lines of strings. Thus, the primitive form in CAREER can be thought of as either a character or a string (a list of characters), depending on how deep you want to go into the program implementation. Basic strings can only be composed of numbers, letters, spaces, and punctuation (this is a potential shortcoming that could be improved in the future). Modifier function strings (which are used as commands for text formatting) can have any character. However, all of these function strings are defined within the definition of CAREER itself, instead of in an actual CAREER program. Modifier function strings are all uppercase and snake case by convention. \\
 
-The combining forms for modifier strings and basic strings are modifiers, lines, and expressions. Modifiers combine modifying functions and other text (other text could include strings or text that has already had some different modifying function applied to it, or both). The left side of a modifier is a modifier function string such as "HEADER\_LEFT" or "BOLD". The right side of a modifier is either another modifier or a basic string, or both. Modifier bodies extend as far right as possible. This means that, in the example "ITEM BOLD hello world", the BOLD command would apply to the entire string "hello world". If the user wants BOLD to only apply to a part of the string, they can use quotes to limit the scope of the function. Returning to the previous example, this would look like 'ITEM BOLD "hello" world', a command which would result in only "hello" being bolded. The other combining form in CAREER is a line. \\
+The combining forms for modifier strings and basic strings are modifiers, lines, and expressions. Modifiers combine modifying functions and other text (other text could include strings or text that has already had some different modifying function applied to it, or both). The left side of a modifier is a modifier function string such as "*HEADER\_LEFT" or "*BOLD". The right side of a modifier is either another modifier or a basic string, or both. Modifier bodies extend as far right as possible. This means that, in the example "*ITEM *BOLD hello world", the BOLD command would apply to the entire string "hello world". If the user wants BOLD to only apply to a part of the string, they can use quotes to limit the scope of the function. Returning to the previous example, this would look like '*ITEM *BOLD "hello" world', a command which would result in only "hello" being bolded. The other combining form in CAREER is a line. \\
 
-A line is simply a list of modifiers and strings, and each line corresponds with an actual line from the input and outputs an actual formatted line in the resluting resume. The result of evaluating 'ITEM BOLD "hello" world' would be Line([Modifier ("ITEM", [Modifier ("BOLD", [String "hello"]); String " world"])]). Notice that the modifier "BOLD" only applies to the string "hello", but the modifier "ITEM" applies to all parts of the string. Finally, an expression is simply a list of lines. Each AST will only contain one expression which contains a list of all of the lines in a resume. \\
+A line is simply a list of modifiers and strings, and each line corresponds with an actual line from the input and outputs an actual formatted line in the resluting resume. The result of evaluating '*ITEM *BOLD "hello" world' would be Line([Modifier ("ITEM", [Modifier ("BOLD", [String "hello"]); String " world"])]). Notice that the modifier "BOLD" only applies to the string "hello", but the modifier "ITEM" applies to all parts of the string. Finally, an expression is simply a list of lines. Each AST will only contain one expression which contains a list of all of the lines in a resume. \\
 
 CAREER will take the path to a text file as input, and will first transform that text file into an AST. Evaluating the AST should result in a latex file that, when built, outputs a well formatted resume. There will be a command that, when including in the running of a CAREER program, will automatically compile the resulting latex file into a pdf. Each string can be fed into the latex file exactly as it is. Each modifier will be transformed into a latex command that wraps the modifiers inner text, formatting that text in the desired fashion. Each line will combine all of the resulting latex-formatted strings from each of its inner modules and strings. Finally, the expression will simply combine all of the latex-formatted line results into one complete resume. \href{https://docs.google.com/document/d/15fBfxPwQn3QLyHhpzfUlZ3BqqN9IacEPcBfZqfHSUe0/edit?usp=sharing}{This resume} (which is just my resume, I'm planning on making this anonymous later) is an example of what a CAREER output could look like (based on the first program example).
 
