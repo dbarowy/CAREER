@@ -129,12 +129,12 @@ This example program introduces the idea of a resume as a work in progress. To f
 *ITEM *BOLD "Booktrak": Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. \\
 
 \subsection*{Language Concepts}
-The core concept of this language is that there are modifiers and text. Text is a primitive, and it is defined as any string that is not a modifier. For example,  in the line "HEADER Harry Albert," "Harry Albert" is the text. Modifiers are (conventionally all caps) functions, indiciated by *, that change how text is displayed. For example, the GENERIC\_SECTION modifier bolds the text that follows it and adds a horizontal line above it to indicate a new section. Ideally, users will be able to create their own modifiers to make the language more groweable. Finally, modifiers can be stacked. For example, ITEM creates a bullet pointed text, and BOLD (used within an item) creates a bolded piece of text. When quotes are included after a modifier, the modifier will apply to all the text included in the quotes. If quotes are not included, the modifier will apply to all text until a new line.
+The core concept of this language is that there are modifiers and text. Text is a primitive, and it is defined as any string that is not a modifier. For example,  in the line "HEADER Harry Albert," "Harry Albert" is the text. Modifiers are (conventionally all caps) functions, indiciated by *, that change how text is displayed. For example, the GENERIC\_SECTION modifier bolds the text that follows it and adds a horizontal line above it to indicate a new section. Ideally, users will be able to create their own modifiers to make the language more groweable. The ITEM function is a special modifier function that can only be applied to the start of a line. Finally, modifiers can be stacked. For example, ITEM creates a bullet pointed text, and BOLD (used within an item) creates a bolded piece of text. When quotes are included after a modifier, the modifier will apply to all the text included in the quotes. If quotes are not included, the modifier will apply to all text until a new line.
 
 \subsection*{Formal Syntax}
 
 $<$expression$>$ = $<$line$>$$[<$expression$>]$\\
-$<$line$>$ = $<$formatted\_text$>^*$ \textbackslash n\\
+$<$line$>$ = [*$<$item\_mod$>]<$formatted\_text$>^*$ \textbackslash n\\
 $<$formatted\_text$>$ = $<$modifier$> | <$string$>$\\
 $<$modifier$>$ = *$<$mod\_fun$>$\textvisiblespace"$<$formatted\_text$>^*$" $| <$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^*$ \\
 $<$mod\_fun$>$ = HEADER
@@ -147,6 +147,7 @@ $<$mod\_fun$>$ = HEADER
 	$|$ ITEM
 	$|$ BOLD
 	$|$ UNDERLINE \\
+$<$item\_mod$>$ = LINE
 ~\\
 $<$string$>$ =  $<$str\_char$>^*$ \\
 $<$str\_char$>$ = $<$letter$> | <$number$> | $ \textvisiblespace\\

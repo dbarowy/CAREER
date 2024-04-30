@@ -30,22 +30,27 @@ let ppunc =
 let goodChar = pletter <|> pdigit <|> ppunc <|> (pchar ' ') <!> "goodChar"
 let pgoodstr = pmany1 goodChar |>> stringify |>> String <!> "pgoodstr"
 
+let itemModifierFunction = pright (pchar '*') (pstr "ITEM")
+
 let modifierFunction =
     pright
         (pchar '*')
-        (pstr ("HEADER")
-         <|> pstr ("HEADER_LEFT")
-         <|> pstr ("HEADER_RIGHT")
-         <|> pstr ("GENERIC_SECTION")
-         <|> pstr ("TITLE_CENTER")
-         <|> pstr ("TITLE_LEFT")
-         <|> pstr ("TITLE_RIGHT")
-         <|> pstr ("ITEM")
-         <|> pstr ("BOLD")
-         <|> pstr ("UNDERLINE")
+        (pstr "HEADER"
+         <|> pstr "HEADER_LEFT"
+         <|> pstr "HEADER_RIGHT"
+         <|> pstr "GENERIC_SECTION"
+         <|> pstr "TITLE_CENTER"
+         <|> pstr "TITLE_LEFT"
+         <|> pstr "TITLE_RIGHT"
+         <|> pstr "BOLD"
+         <|> pstr "UNDERLINE"
          <!> "modifierFunction")
 
 let limitedFormattedText = pbetween (pchar '"') (pmany1 formattedText) (pchar '"')
+
+let itemModifier =
+    pseq (pleft itemModifierFunction pws1) (limitedFormattedText <|> (pmany1 formattedText)) Modifier
+    <!> "itemModifier"
 
 let modifier =
     pseq (pleft modifierFunction pws1) (limitedFormattedText <|> (pmany1 formattedText)) Modifier
@@ -53,7 +58,9 @@ let modifier =
 
 formattedTextImpl := modifier <|> pgoodstr <!> "formattedText"
 
-let line = pmany1 formattedText |>> FormattedTexts
+let line =
+    (itemModifier |>> (fun (f) -> FormattedTexts([ f ])))
+    <|> ((pmany1 formattedText) |>> FormattedTexts)
 
 exprImpl := pmany1 (pleft line (pmany1 (pchar '\n'))) |>> Lines <!> "expr"
 

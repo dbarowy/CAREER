@@ -18,8 +18,7 @@ let main args =
     match ast_maybe with
     | Some ast ->
         printfn "%A" ast
-        let res = eval ast args[0]
-        printfn "result: %s" res
+        eval ast args[0]
     | None -> exit 1
 
     0
