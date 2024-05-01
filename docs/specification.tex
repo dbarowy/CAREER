@@ -150,10 +150,7 @@ $<$mod\_fun$>$ = HEADER
 $<$item\_mod$>$ = LINE
 ~\\
 $<$string$>$ =  $<$str\_char$>^*$ \\
-$<$str\_char$>$ = $<$letter$> | <$number$> | $ \textvisiblespace\\
-$<$letter$>$ = $\alpha \in \{a, ..., z\}$ \\
-$<$number$>$ = $\alpha \in \{0, ..., 9\}$\\
-$<$punctuation$>$ = $\alpha \in \{$'.', '?', '!', ',', '-', '—', ':', ';', '(', ')', '+', '/', '"', '”'$\}$\\
+$<$str\_char$>$ = $c \in {\text{all characters}} \wedge c \not\in \{\text{\textbackslash n, *}\}$\\
 ~\\
 
 \subsection*{Semantics}

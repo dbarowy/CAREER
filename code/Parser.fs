@@ -3,8 +3,8 @@ module Parser
 open Combinator
 
 // TODO: add link modifier
-// require quotes for link, only allow string (not modifier) within link, and then link can take any character
 
+(* flag to print debug info *)
 let DEBUG = false
 
 (* Top level type, holds all lines in resume *)
@@ -24,31 +24,30 @@ and Modifier = string * (FormattedText list)
 let expr, exprImpl = recparser ()
 let formattedText, formattedTextImpl = recparser ()
 
-// TODO: try out just accepting all non-special characters using psat
-(* non-alphabetic/numerical accepted characters *)
-let ppunc =
-    pchar '.'
-    <|> pchar '?'
-    <|> pchar '!'
-    <|> pchar ','
-    <|> pchar '-'
-    <|> pchar '—'
-    <|> pchar ':'
-    <|> pchar ';'
-    <|> pchar '('
-    <|> pchar ')'
-    <|> pchar '+'
-    <|> pchar '/'
-    <|> pchar '"'
-    <|> pchar '”'
-    <!> "ppunc"
-
 (* special characters that need to be prefaced by / in latex *)
-let pspecialchar =
-    (pchar '#' <|> pchar '&') |>> (fun (c) -> (sprintf "\\%c" c)) |>> String
+let backslashReservedCharacters = [ '#'; '$'; '%'; '&'; '~'; '_'; '^'; '{'; '}' ]
+
+let backslashReservedChar =
+    ((psat (fun (c) -> List.contains c backslashReservedCharacters))
+     |>> (fun (c) -> (sprintf "\\%c" c)))
+
+(* special characters that need to be surrounded by $ in latex *)
+let dolarReservedCharacters = [ '>'; '<'; '\\' ]
+
+let dolarReservedChar =
+    ((psat (fun (c) -> List.contains c dolarReservedCharacters))
+     |>> (fun (c) -> if c = '\\' then "$\\backslash$" else (sprintf "$%c$" c)))
+
+let preservedchar = (backslashReservedChar <|> dolarReservedChar) |>> String
 
 (* any non-special character *)
-let goodChar = pletter <|> pdigit <|> ppunc <|> (pchar ' ') <!> "goodChar"
+let goodChar =
+    (psat (fun (c) ->
+        c <> '*'
+        && c <> '\n'
+        && not (List.contains c backslashReservedCharacters)
+        && not (List.contains c dolarReservedCharacters)))
+    <!> "goodChar"
 
 (* string composed of non-special characters *)
 let pgoodstr = pmany1 goodChar |>> stringify |>> String <!> "pgoodstr"
@@ -64,7 +63,7 @@ let rec formattedTextsToString fs =
 
 (* tex formatted string *)
 let formattedString =
-    (pmany1 (pgoodstr <|> pspecialchar) |>> formattedTextsToString |>> String)
+    (pmany1 (pgoodstr <|> preservedchar) |>> formattedTextsToString |>> String)
 
 (* ITEM modifier function (can only be applied at the start of a line) *)
 let itemModifierFunction =
