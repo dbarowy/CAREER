@@ -102,11 +102,11 @@ This example program is similar to the previous program. However, it adds on the
 *HEADER\_LEFT (111)111-1111 \\
 *HEADER\_RIGHT hsa1@williams.edu \\
 ~\\
-*GENERIC\_SECTION Languages \& Technologies\\
+*SECTION Languages \& Technologies\\
 *ITEM Javascript/Typescript, Python, HTML + CSS, F\#, Java, C \\
 *ITEM React, Scikit-Learn, PyTorch, SolidJS, REST APIs \\
 ~\\
-*GENERIC\_SECTION Projects\\
+*SECTION Projects\\
 *ITEM *BOLD "ML Lung Cancer Prediction Tool": Created a neural network to predict lung cancer based on several easily self-diagnosable conditions. Published website where users can interact with this model to democratize access and allow users to play with the model. \\
 *ITEM *BOLD "Booktrak": Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. \\
 \noindent\rule{16.2cm}{0.4pt} \\
@@ -120,16 +120,16 @@ This example program introduces the idea of a resume as a work in progress. To f
 *HEADER\_RIGHT hsa1@williams.edu \\
 \textbackslash\textbackslash\enspace TODO: add in website link here
 ~\\
-*GENERIC\_SECTION Languages \& Technologies \\
+*SECTION Languages \& Technologies \\
 *ITEM Javascript/Typescript, Python, HTML + CSS, Java, C \textbackslash\textbackslash\enspace remember to add on F\# when I'm done with PL \\
 *ITEM React, Scikit-Learn, PyTorch, SolidJS, REST APIs \\
 ~\\
-*GENERIC\_SECTION Projects \\
+*SECTION Projects \\
 *ITEM *BOLD "ML Lung Cancer Prediction Tool": Created a neural network to predict lung cancer based on several easily self-diagnosable conditions. Published website where users can interact with this model to democratize access and allow users to play with the model. \textbackslash\textbackslash\enspace Remember to bring this up in job interviews as an example of ML experience \\
 *ITEM *BOLD "Booktrak": Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. \\
 
 \subsection*{Language Concepts}
-The core concept of this language is that there are modifiers and text. Text is a primitive, and it is defined as any string that is not a modifier. For example,  in the line "HEADER Harry Albert," "Harry Albert" is the text. Modifiers are (conventionally all caps) functions, indiciated by *, that change how text is displayed. For example, the GENERIC\_SECTION modifier bolds the text that follows it and adds a horizontal line above it to indicate a new section. Ideally, users will be able to create their own modifiers to make the language more groweable. The ITEM function is a special modifier function that can only be applied to the start of a line. Finally, modifiers can be stacked. For example, ITEM creates a bullet pointed text, and BOLD (used within an item) creates a bolded piece of text. When quotes are included after a modifier, the modifier will apply to all the text included in the quotes. If quotes are not included, the modifier will apply to all text until a new line.
+The core concept of this language is that there are modifiers and text. Text is a primitive, and it is defined as any string that is not a modifier. For example,  in the line "HEADER Harry Albert," "Harry Albert" is the text. Modifiers are (conventionally all caps) functions, indiciated by *, that change how text is displayed. For example, the SECTION modifier bolds the text that follows it and adds a horizontal line above it to indicate a new section. Ideally, users will be able to create their own modifiers to make the language more groweable. The ITEM function is a special modifier function that can only be applied to the start of a line. Finally, modifiers can be stacked. For example, ITEM creates a bullet pointed text, and BOLD (used within an item) creates a bolded piece of text. When quotes are included after a modifier, the modifier will apply to all the text included in the quotes. If quotes are not included, the modifier will apply to all text until a new line.
 
 \subsection*{Formal Syntax}
 
@@ -140,7 +140,7 @@ $<$modifier$>$ = *$<$mod\_fun$>$\textvisiblespace"$<$formatted\_text$>^*$" $| <$
 $<$mod\_fun$>$ = HEADER
 	$|$ HEADER\_LEFT
 	$|$ HEADER\_RIGHT
-	$|$ GENERIC\_SECTION 
+	$|$ SECTION 
 	$|$ TITLE\_CENTER
 	$|$ TITLE\_LEFT
 	$|$ TITLE\_RIGHT
@@ -153,7 +153,7 @@ $<$string$>$ =  $<$str\_char$>^*$ \\
 $<$str\_char$>$ = $<$letter$> | <$number$> | $ \textvisiblespace\\
 $<$letter$>$ = $\alpha \in \{a, ..., z\}$ \\
 $<$number$>$ = $\alpha \in \{0, ..., 9\}$\\
-$<$punctuation$>$ = $\alpha \in \{$'.', '?', '!', ',', '-', '—', ':', ';'$\}$\\
+$<$punctuation$>$ = $\alpha \in \{$'.', '?', '!', ',', '-', '—', ':', ';', '(', ')', '+', '/', '"', '”'$\}$\\
 ~\\
 
 \subsection*{Semantics}

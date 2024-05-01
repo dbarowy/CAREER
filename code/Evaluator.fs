@@ -1,6 +1,8 @@
 module Evaluator
 
 open Parser
+open Shell
+open System.IO
 
 (* 
     Record whether a line is the start/end of a list, 
@@ -12,8 +14,10 @@ type ListCap =
     | End
     | Nothing of bool
 
+(* Intro to output latex file *)
 let doc_preamble =
     [ "\\documentclass[10pt]{article}"
+      "\\usepackage{enumitem}"
       "\\usepackage{geometry}"
       "\\geometry{top=1in, bottom=1in, left=.5in, right=.5in}"
       "\\geometry{paperwidth=8.5in, paperheight=11in}"
@@ -21,8 +25,15 @@ let doc_preamble =
       "\\begin{document}" ]
     |> List.fold (fun acc s -> acc + s + "\n") ""
 
+(* Ending to output latex file*)
 let doc_ending = [ "\\end{document}" ] |> List.fold (fun acc s -> acc + s + "\n") ""
 
+(* 
+    Latex lists are started/ended with specific commands.
+    Asking users to insert start/end list commands would be cumbersome,
+    so we instead traverse the AST and record which lines constitute the
+    start/end of lists.
+ *)
 let find_list_caps (ast: Expression) : ListCap list =
     let rec find_list_caps' (lines: Line list) (previousItem: bool) =
         match lines with
@@ -45,14 +56,16 @@ let find_list_caps (ast: Expression) : ListCap list =
     match ast with
     | Lines(lines) -> find_list_caps' lines false
 
-
+(* map modifier command to associated latex code *)
 let rec evalModifierCommand (command: string) (inner: string) =
     match command with
+    | "ITEM" -> sprintf "\\item %s" inner
     | "BOLD" -> sprintf "\\textbf{%s}" inner
     | "UNDERLINE" -> sprintf "\\underline{%s}" inner
-    | "ITEM" -> sprintf "\\item %s" inner // TODO: shrink bullet point, indent
+    | "SECTION" -> sprintf "\\textbf{%s}\\\\[-2ex]\n" inner + "\\rule{\\textwidth}{0.4pt}"
     | _ -> inner // TODO: add rest of commands, error out here when no commands are matches
 
+(* convert list of formatted texts to one string *)
 let rec evalFormattedTexts (formattedTexts: FormattedText list) =
     let rec evalFormattedText (f: FormattedText) =
         match f with
@@ -65,10 +78,18 @@ let rec evalFormattedTexts (formattedTexts: FormattedText list) =
     | f :: fs' -> evalFormattedText (f) + evalFormattedTexts (fs')
     | [] -> ""
 
+(* 
+    convert an entire line to latex code, using recorded list caps
+    to add list start/end commmands if that's necessary
+*)
 let rec evalLines (lines: Line list) (caps: ListCap list) : string =
     match lines, caps with
     | FormattedTexts(line) :: ls', Start :: caps' ->
-        "\\begin{itemize}\n" + (evalFormattedTexts line) + "\n" + (evalLines ls' caps')
+        "\\vspace{-\\baselineskip}\n"
+        + "\\begin{itemize}[itemsep=0pt, topsep=0pt]\n"
+        + (evalFormattedTexts line)
+        + "\n"
+        + (evalLines ls' caps')
     | FormattedTexts(line) :: ls', End :: caps' ->
         "\\end{itemize}\n"
         + (evalFormattedTexts line)
@@ -78,16 +99,41 @@ let rec evalLines (lines: Line list) (caps: ListCap list) : string =
         (evalFormattedTexts line)
         + (if isItem then "\n" else "\\\\ \n")
         + (evalLines ls' caps')
+    | [], [] -> ""
     | [], _ -> "\\end{itemize}\n"
     | _ -> ""
 
-let eval (ast: Expression) (fileName: string) : unit =
-    printfn ""
-
+(* evaluate txt file and convert to latex, compile latex if possible *)
+let eval (ast: Expression) (file_name: string) : unit =
     let list_caps = find_list_caps ast
-    printfn "%A" list_caps
 
     match ast with
     | Lines(lines) ->
         let res = doc_preamble + (evalLines lines list_caps) + doc_ending
-        System.IO.File.WriteAllText(fileName.Replace(".txt", ".tex"), res)
+        let tex_file_name = file_name.Replace(".txt", ".tex")
+        System.IO.File.WriteAllText(tex_file_name, res)
+
+        let test_package =
+            executeShellCommand "pdflatex --version" |> Async.RunSynchronously
+
+        if test_package.StandardOutput.StartsWith("pdfTeX") then
+            let dir_path = Path.GetDirectoryName(file_name)
+
+            let output_command =
+                if dir_path = "" then
+                    ""
+                else
+                    (sprintf "-output-directory %s" dir_path)
+
+            let command = sprintf "pdflatex -halt-on-error %s %s" output_command tex_file_name
+            let compile_res = executeShellCommand command |> Async.RunSynchronously
+
+            if compile_res.StandardOutput.Contains("Fatal error occurred") then
+                printfn "Uh oh, something went wrong with your resume compilation!"
+                printfn "Run `pdflatex %s` in the shell to get more info on the issue." tex_file_name
+                exit 1
+            else
+                printfn "CARRER resume succesfully compiled to %s" (file_name.Replace(".txt", ".pdf"))
+        else
+            printfn "CARRER resume succesfully compiled to %s" tex_file_name
+            printfn "Download pdflatex (or use overleaf online) to compile %s" tex_file_name
