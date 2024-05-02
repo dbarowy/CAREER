@@ -45,6 +45,8 @@ let goodChar =
     (psat (fun (c) ->
         c <> '*'
         && c <> '\n'
+        && c <> '['
+        && c <> ']'
         && not (List.contains c backslashReservedCharacters)
         && not (List.contains c dolarReservedCharacters)))
     <!> "goodChar"
@@ -74,8 +76,7 @@ let modifierFunction =
     pright
         (pchar '*')
         (pstr "HEADER"
-         <|> pstr "HEADER_LEFT"
-         <|> pstr "HEADER_RIGHT"
+         <|> pstr "SUB_HEADER"
          <|> pstr "SECTION"
          <|> pstr "TITLE_CENTER"
          <|> pstr "TITLE_LEFT"
@@ -86,7 +87,7 @@ let modifierFunction =
 
 (* formatted text limited by "" *)
 let limitedFormattedText =
-    pbetween (pchar '"') (pmany1 formattedText) (pchar '"') <!> "limitedText"
+    pbetween (pchar '[') (pmany1 formattedText) (pchar ']') <!> "limitedText"
 
 (* full line modified by ITEM function  *)
 let itemModifier =

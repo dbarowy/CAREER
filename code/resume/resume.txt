@@ -1,8 +1,11 @@
+*HEADER Harry Albert
+*SUB_HEADER (413)770-6129, HarryAlbert364@gmail.com
+*SUB_HEADER harryalbert.dev
 *SECTION Projects
-*ITEM ML Lung Cancer Prediction Tool: Created a neural network to predict lung cancer based on several easily self-diagnosable conditions. Published a website where users can interact with this model to democratize access and allow users to play with the model. Available at https://lung-cancer-risk-assessment-tool.vercel.app/.
-*ITEM Booktrak: Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. View Booktrak demo here.
-*ITEM GPT-Crossword: Used the ChatGPT API to create an AI powered crossword solving assistant which can give you hints or answers to your toughest crossword clues. Available at https://gpt-six-mu.vercel.app/.
-*ITEM Devitas: Created Devitas — a free, easy-to-use website builder for students applying to college, jobs, and internships. Independently implemented full-stack web application using Node.js, JavaScript, and HTML.
+*ITEM *BOLD [*UNDERLINE ML Lung Cancer Prediction Tool]: Created a neural network to predict lung cancer based on several easily self-diagnosable conditions. Published a website where users can interact with this model to democratize access and allow users to play with the model. Available at https://lung-cancer-risk-assessment-tool.vercel.app/.
+*ITEM *BOLD [*UNDERLINE Booktrak]: Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. View Booktrak demo here.
+*ITEM *BOLD [*UNDERLINE GPT-Crossword]: Used the ChatGPT API to create an AI powered crossword solving assistant which can give you hints or answers to your toughest crossword clues. Available at https://gpt-six-mu.vercel.app/.
+*ITEM *BOLD [*UNDERLINE Devitas]: Created Devitas — a free, easy-to-use website builder for students applying to college, jobs, and internships. Independently implemented full-stack web application using Node.js, JavaScript, and HTML.
 
 *SECTION Research
 *ITEM Williams, Aaron. “Low Viral Load: Randomized Puzzles in Dr. Mario (1990–2001).”

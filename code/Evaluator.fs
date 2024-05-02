@@ -9,7 +9,7 @@ open System.IO
     and whether the line is an item (for spacing purposes).
     We know a Start is always an item, and an end never is
 *)
-type ListCap =
+type ModuleCap =
     | Start
     | End
     | Nothing of bool
@@ -34,7 +34,29 @@ let doc_ending = [ "\\end{document}" ] |> List.fold (fun acc s -> acc + s + "\n"
     so we instead traverse the AST and record which lines constitute the
     start/end of lists.
  *)
-let find_list_caps (ast: Expression) : ListCap list =
+let find_list_caps (ast: Expression) : ModuleCap list =
+    let rec find_list_caps' (lines: Line list) (previousItem: bool) =
+        match lines with
+        | line :: ls' ->
+            match line with
+            | FormattedTexts(fs) ->
+                match fs with
+                | f_expr :: _ ->
+                    match f_expr with
+                    | Modifier(m, _) when m = "ITEM" && (not previousItem) -> Start :: (find_list_caps' ls' true)
+                    | Modifier(m, _) when m = "ITEM" -> Nothing(true) :: find_list_caps' ls' true
+                    | Modifier(_) when previousItem -> End :: find_list_caps' ls' false
+                    | Modifier(_) -> Nothing(false) :: find_list_caps' ls' false
+                    | String(_) when previousItem -> End :: find_list_caps' ls' false
+                    | String(_) -> Nothing(false) :: find_list_caps' ls' false
+                | [] -> Nothing(false) :: find_list_caps' ls' false
+        | [] when previousItem -> [ End ]
+        | [] -> []
+
+    match ast with
+    | Lines(lines) -> find_list_caps' lines false
+
+let find_title_caps (ast: Expression) : ModuleCap list =
     let rec find_list_caps' (lines: Line list) (previousItem: bool) =
         match lines with
         | line :: ls' ->
@@ -59,6 +81,18 @@ let find_list_caps (ast: Expression) : ListCap list =
 (* map modifier command to associated latex code *)
 let rec evalModifierCommand (command: string) (inner: string) =
     match command with
+    | "HEADER" ->
+        "\\vspace{-\\baselineskip}\n"
+        + "\\begin{center}\n"
+        + sprintf "\\Large %s\n" inner
+        + "\\end{center}\n"
+        + "\\vspace{-6.5ex}~"
+    | "SUB_HEADER" ->
+        "\\vspace{-\\baselineskip}\n"
+        + "\\begin{center}\n"
+        + sprintf "\\normalsize %s\n" inner
+        + "\\end{center}\n"
+        + "\\vspace{-6.5ex}~"
     | "ITEM" -> sprintf "\\item %s" inner
     | "BOLD" -> sprintf "\\textbf{%s}" inner
     | "UNDERLINE" -> sprintf "\\underline{%s}" inner
@@ -82,7 +116,7 @@ let rec evalFormattedTexts (formattedTexts: FormattedText list) =
     convert an entire line to latex code, using recorded list caps
     to add list start/end commmands if that's necessary
 *)
-let rec evalLines (lines: Line list) (caps: ListCap list) : string =
+let rec evalLines (lines: Line list) (caps: ModuleCap list) : string =
     match lines, caps with
     | FormattedTexts(line) :: ls', Start :: caps' ->
         "\\vspace{-\\baselineskip}\n"
