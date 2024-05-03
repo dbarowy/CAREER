@@ -69,14 +69,18 @@ let formattedString =
 
 (* ITEM modifier function (can only be applied at the start of a line) *)
 let itemModifierFunction =
-    pright (pchar '*') (pstr "ITEM") <!> "itemModifierFunction"
+    pright (pchar '*') (pstr "ITEM") <!> "item fodifier function"
+
+let subsectionTitleModifierFunction =
+    pright (pchar '*') (pstr "SUBSECTION_TITLE")
+    <!> "subsection title modifier function"
 
 (* general accepted modifier function (can be applied anywhere) *)
 let modifierFunction =
     pright
         (pchar '*')
         (pstr "HEADER"
-         <|> pstr "SUB_HEADER"
+         <|> pstr "SUBHEADER"
          <|> pstr "SECTION"
          <|> pstr "TITLE_CENTER"
          <|> pstr "TITLE_LEFT"
@@ -94,6 +98,17 @@ let itemModifier =
     pseq (pleft itemModifierFunction pws1) (limitedFormattedText <|> (pmany1 formattedText)) Modifier
     <!> "itemModifier"
 
+let oneToNRepeats p n =
+    (pbind (pmany1 p) (fun c -> if (c.Length <= n) then presult c else pzero))
+    <!> "1-3 repeats"
+
+let subsectionTitleContent =
+    oneToNRepeats (pleft (pbetween (pchar '[') formattedString (pchar ']')) (pmany0 (pchar ' '))) 3
+    <|> (formattedString |>> (fun (s) -> [ s ]))
+
+let subsectionTitleModifier =
+    pseq (pleft subsectionTitleModifierFunction pws0) subsectionTitleContent Modifier
+
 (* general text sequence formatted by some modifier *)
 let modifier =
     pseq (pleft modifierFunction pws1) (limitedFormattedText <|> (pmany1 formattedText)) Modifier
@@ -105,6 +120,7 @@ formattedTextImpl := modifier <|> formattedString <!> "formattedText"
 (* one line from/to input/output resume *)
 let line =
     (itemModifier |>> (fun (f) -> FormattedTexts([ f ])))
+    <|> (subsectionTitleModifier |>> (fun (f) -> FormattedTexts([ f ])))
     <|> ((pmany1 formattedText) |>> FormattedTexts)
     <!> "line"
 

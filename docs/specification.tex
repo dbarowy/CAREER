@@ -19,6 +19,7 @@
 \usepackage{enumitem}   
 \usepackage{fancyvrb}
 \usepackage{todonotes}
+\usepackage{tabto}
 
 % This will set LaTeX to look for figures in the same directory as the .tex file
 \graphicspath{.} % The dot means current directory.
@@ -75,8 +76,8 @@ The main goal of CAREER's design is to be easily readable and modifiable by the 
 This example program shows how one could create a complete, basic resume using CAREER. This resume includes a title, contact information, and multiple unique sections. Each of these sections has multipe titles with different alignments, as well as bullet point items. While this resume is slightly long, it is easily readable and modifiable. It is easy to imagine how a resulting resume would look based on this code. \\
 ~\\
 *HEADER Harry Albert \\
-*SUB\_HEADER (111)111-1111 \\
-*SUB\_HEADER hsa1@williams.edu \\
+*SUBHEADER (111)111-1111 \\
+*SUBHEADER hsa1@williams.edu \\
 ~\\
 *EDUCATION\\
 *TITLE\_LEFT Williamstown, MA \\
@@ -99,8 +100,8 @@ This example program shows how one could create a complete, basic resume using C
 This example program is similar to the previous program. However, it adds on the idea of generic sections. Having built in commands for common sections like employment and education is great, but there should still be room for the user to create some of their own generic sections. This idea of generic types can and should be extended to other aspects of the CAREER language. \\
 ~\\
 *HEADER Harry Albert \\
-*SUB\_HEADER (111)111-1111 \\
-*SUB\_HEADER hsa1@williams.edu \\
+*SUBHEADER (111)111-1111 \\
+*SUBHEADER hsa1@williams.edu \\
 ~\\
 *SECTION Languages \& Technologies\\
 *ITEM Javascript/Typescript, Python, HTML + CSS, F\#, Java, C \\
@@ -113,8 +114,8 @@ This example program is similar to the previous program. However, it adds on the
 This example program introduces the idea of brackets as limiters on the skoper of modifiers. Only the words within the brackets are bolded under the projects section. \\
 ~\\
 *HEADER Harry Albert \\
-*SUB\_HEADER (111)111-1111 \\
-*SUB\_HEADER hsa1@williams.edu \\
+*SUBHEADER (111)111-1111 \\
+*SUBHEADER hsa1@williams.edu \\
 \textbackslash\textbackslash\enspace TODO: add in website link here
 ~\\
 *SECTION Languages \& Technologies \\
@@ -130,29 +131,32 @@ The core concept of this language is that there are modifiers and text. Text is 
 
 \subsection*{Formal Syntax}
 
-$<$expression$>$ = $<$line$>$$<$expression$>^*$\\
-$<$line$>$ = *$<$item\_mod$><$formatted\_text$>^*$ \textbackslash n $| <$formatted\_text$>^*$ \textbackslash n\\
-$<$formatted\_text$>$ = $<$modifier$> | <$string$>$\\
-$<$modifier$>$ = *$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^*$] $| <$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^*$ \\
-$<$mod\_fun$>$ = HEADER
-	$|$ SUB\_HEADER
-	$|$ SECTION 
-	$|$ TITLE\_CENTER
-	$|$ TITLE\_LEFT
-	$|$ TITLE\_RIGHT
-	$|$ ITEM
-	$|$ BOLD
+$<$expression$>$ ::= $<$line$>$$<$expression$>^*$\\
+$<$line$>$ ::= $<$line\_content$>$ \textbackslash n \\
+$<$line\_content$>$ ::= *LINE\textvisiblespace$<$formatted\_text$>^*$ \\
+	$|$ *SUBSECTION\_TITLE \textvisiblespace$<$subsection\_content$>^*$ \\
+	$| <$formatted\_text$>^*$ \\
+$<$subsection\_content$>$ ::= [$<$string$>$] $|$ [$<$string$>$][$<$string$>$] $|$ [$<$string$>$][$<$string$>$][$<$string$>$] \\
+$<$formatted\_text$>$ ::= $<$modifier$> | <$string$>$\\
+$<$modifier$>$ ::= *$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^*$] $| <$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^*$ \\
+$<$mod\_fun$>$ ::= HEADER \\
+	$|$ SUBHEADER \\
+	$|$ SECTION \\
+	$|$ TITLE\_CENTER \\
+	$|$ TITLE\_LEFT \\
+	$|$ TITLE\_RIGHT \\
+	$|$ ITEM \\
+	$|$ BOLD \\
 	$|$ UNDERLINE \\
-$<$item\_mod$>$ = LINE
 ~\\
-$<$string$>$ =  $<$str\_char$>^*$ \\
-$<$str\_char$>$ = $c \in \{\text{all characters}\} \wedge c \not\in \{\text{\textbackslash n, *, [, ]}\}$\\
+$<$string$>$ ::=  $<$str\_char$>^*$ \\
+$<$str\_char$>$ ::= $c \in \{\text{all characters}\} \wedge c \not\in \{\text{\textbackslash n, *, [, ]}\}$\\
 ~\\
 
 \subsection*{Semantics}
 CAREER is essentially composed of many lines of strings. Thus, the primitive form in CAREER can be thought of as either a character or a string (a list of characters), depending on how deep you want to go into the program implementation. Basic strings can only be composed of numbers, letters, spaces, and punctuation (this is a potential shortcoming that could be improved in the future). Modifier function strings (which are used as commands for text formatting) can have any character. However, all of these function strings are defined within the definition of CAREER itself, instead of in an actual CAREER program. Modifier function strings are all uppercase and snake case by convention. \\
 
-The combining forms for modifier strings and basic strings are modifiers, lines, and expressions. Modifiers combine modifying functions and other text (other text could include strings or text that has already had some different modifying function applied to it, or both). The left side of a modifier is a modifier function string such as "*SUB\_HEADER" or "*BOLD". The right side of a modifier is either another modifier or a basic string, or both. Modifier bodies extend as far right as possible. This means that, in the example "*ITEM *BOLD hello world", the BOLD command would apply to the entire string "hello world". If the user wants BOLD to only apply to a part of the string, they can use quotes to limit the scope of the function. Returning to the previous example, this would look like '*ITEM *BOLD "hello" world', a command which would result in only "hello" being bolded. The other combining form in CAREER is a line. \\
+The combining forms for modifier strings and basic strings are modifiers, lines, and expressions. Modifiers combine modifying functions and other text (other text could include strings or text that has already had some different modifying function applied to it, or both). The left side of a modifier is a modifier function string such as "*SUBHEADER" or "*BOLD". The right side of a modifier is either another modifier or a basic string, or both. Modifier bodies extend as far right as possible. This means that, in the example "*ITEM *BOLD hello world", the BOLD command would apply to the entire string "hello world". If the user wants BOLD to only apply to a part of the string, they can use quotes to limit the scope of the function. Returning to the previous example, this would look like '*ITEM *BOLD "hello" world', a command which would result in only "hello" being bolded. The other combining form in CAREER is a line. \\
 
 A line is simply a list of modifiers and strings, and each line corresponds with an actual line from the input and outputs an actual formatted line in the resluting resume. The result of evaluating '*ITEM *BOLD [hello] world' would be Line([Modifier ("ITEM", [Modifier ("BOLD", [String "hello"]); String " world"])]). Notice that the modifier "BOLD" only applies to the string "hello", as hello is surrounded by brackets, but the modifier "ITEM" applies to all parts of the string. Finally, an expression is simply a list of lines. Each AST will only contain one expression which contains a list of all of the lines in a resume. \\
 

@@ -1,6 +1,39 @@
 *HEADER Harry Albert
-*SUB_HEADER (413)770-6129, HarryAlbert364@gmail.com
-*SUB_HEADER harryalbert.dev
+*SUBHEADER (413)770-6129, HarryAlbert364@gmail.com
+*SUBHEADER harryalbert.dev
+
+*SECTION Education
+*SUBSECTION_TITLE [Williams, MA] [Williams College] [Fall 2021 – May 2025]
+*ITEM GPA 3.92, anticipated B.A. with double major in Computer Science & Philosophy
+*ITEM Teaching Assistant for introductory and upper-level CS courses over five semesters
+*ITEM Activities include PAC Comedy Club, Opinions Columnist for the Williams Record Newspaper, WSO (student run website for Williams College)
+
+*SECTION Employment
+*SUBSECTION_TITLE [Software Engineer, Intern] [Bubble] [Summer 2023]
+Bubble is a no-code web development platform. I worked on the Growth Team
+*ITEM Ideated and executed project to refresh new hire onboarding, used by all new hires at Bubble, and created universal set of standards for writing and maintaining documentation
+*ITEM Contributed to multiple successful experiments, including improving the editor UI and user journey
+*ITEM Acted as a full time engineer on the team by completing sprint tickets and contributing to AGILE ceremonies
+
+*SUBSECTION_TITLE [Software Engineer, Intern] [Meta] [Summer 2022]
+Service Efficiency & Capacity Tooling Team
+*ITEM Created two dynamic data visualization projects used by many engineers outside of the team
+*ITEM Interviewed Meta engineers and gathered feedback in order to tailor designs to, and advocate for, their needs
+*ITEM Wrote the second most lines of code of any engineer in the team during my tenure
+
+*SUBSECTION_TITLE [Software Engineer] [Cadence Effects] [July 2020 – August 2021]
+Cadence Effects is a VFX company based in New Lebanon, NY.
+*ITEM Took a gap year to work as a full time software engineer at Cadence
+*ITEM Independently ideated and executed efficiency tools under the direction of the Head of Production
+*ITEM Streamlined production pipeline by creating file management tools which integrated with existing workflows
+*ITEM Automated video transferring tasks by creating tools that interacted with the company’s web-based video storage platform
+*ITEM Created and maintained company intranet
+
+*SUBSECTION_TITLE [Programming Consultant] [Plexus Notes] [November 2021 – February 2022]
+*ITEM Plexus is a smart note taking startup founded by a Williams College alumnus
+*ITEM Created Chrome extension to improve usability of Plexus
+*ITEM Consulted on the rollout of Plexus to the Williams College community
+
 *SECTION Projects
 *ITEM *BOLD [*UNDERLINE ML Lung Cancer Prediction Tool]: Created a neural network to predict lung cancer based on several easily self-diagnosable conditions. Published a website where users can interact with this model to democratize access and allow users to play with the model. Available at https://lung-cancer-risk-assessment-tool.vercel.app/.
 *ITEM *BOLD [*UNDERLINE Booktrak]: Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. View Booktrak demo here.

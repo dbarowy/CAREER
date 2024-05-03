@@ -19,10 +19,11 @@ let doc_preamble =
     [ "\\documentclass[10pt]{article}"
       "\\usepackage{enumitem}"
       "\\usepackage{geometry}"
-      "\\geometry{top=1in, bottom=1in, left=.5in, right=.5in}"
+      "\\geometry{top=.75in, bottom=.75in, left=.5in, right=.5in}"
       "\\geometry{paperwidth=8.5in, paperheight=11in}"
       "\\setlength{\\parindent}{0pt}"
-      "\\begin{document}" ]
+      "\\begin{document}"
+      "\\thispagestyle{empty}" ]
     |> List.fold (fun acc s -> acc + s + "\n") ""
 
 (* Ending to output latex file*)
@@ -87,22 +88,89 @@ let rec evalModifierCommand (command: string) (inner: string) =
         + sprintf "\\Large %s\n" inner
         + "\\end{center}\n"
         + "\\vspace{-6.5ex}~"
-    | "SUB_HEADER" ->
+    | "SUBHEADER" ->
         "\\vspace{-\\baselineskip}\n"
         + "\\begin{center}\n"
         + sprintf "\\normalsize %s\n" inner
         + "\\end{center}\n"
-        + "\\vspace{-6.5ex}~"
+        + "\\vspace{-6ex}~"
     | "ITEM" -> sprintf "\\item %s" inner
     | "BOLD" -> sprintf "\\textbf{%s}" inner
     | "UNDERLINE" -> sprintf "\\underline{%s}" inner
     | "SECTION" -> sprintf "\\textbf{%s}\\\\[-2ex]\n" inner + "\\rule{\\textwidth}{0.4pt}"
     | _ -> inner // TODO: add rest of commands, error out here when no commands are matches
 
+(*
+\begin{tabular}{@{}p{\textwidth}}
+  \begin{minipage}[t]{0.333\textwidth}
+    \raggedright
+    Left aligned text
+  \end{minipage}%
+  \begin{minipage}[t]{0.333\textwidth}
+    \centering
+    Center aligned text
+  \end{minipage}%
+  \begin{minipage}[t]{0.333\textwidth}
+    \raggedleft
+    Right aligned text
+  \end{minipage}
+\end{tabular}
+*)
+
+let rec evalSubsectionTitle (formattedTexts: FormattedText list) =
+    let rec textsToString texts =
+        match texts with
+        | String(s) :: texts' -> s :: textsToString texts'
+        | _ :: texts' ->
+            printfn "Subsection Titles should only contain strings (no modifiers)"
+            exit 1
+        | [] -> []
+
+    let stringTexts = textsToString formattedTexts
+
+    let res =
+        match stringTexts.Length with
+        | 1 ->
+            "\\begin{minipage}[t]{\\textwidth}\n"
+            + "\\centering\n"
+            + (sprintf "\\textbf{\\underline{%s}}\n" stringTexts[0])
+            + "\end{minipage}%\n"
+        | 2 ->
+            "\\begin{minipage}[t]{0.5\\textwidth}\n"
+            + "\\raggedright\n"
+            + (sprintf "\\textbf{%s}\n" stringTexts[0])
+            + "\end{minipage}%\n"
+            + "\\begin{minipage}[t]{0.5\\textwidth}\n"
+            + "\\raggedleft\n"
+            + (sprintf "\\textbf{%s}\n" stringTexts[1])
+            + "\end{minipage}%\n"
+        | 3 ->
+            "\\begin{minipage}[t]{0.333\\textwidth}\n"
+            + "\\raggedright\n"
+            + (sprintf "\\textbf{%s}\n" stringTexts[0])
+            + "\end{minipage}%\n"
+            + "\\begin{minipage}[t]{0.333\\textwidth}\n"
+            + "\\centering\n"
+            + (sprintf "\\textbf{\\underline{%s}}\n" stringTexts[1])
+            + "\end{minipage}%\n"
+            + "\\begin{minipage}[t]{0.333\\textwidth}\n"
+            + "\\raggedleft\n"
+            + (sprintf "\\textbf{%s}\n" stringTexts[2])
+            + "\end{minipage}%\n"
+        | _ ->
+            printfn "Subsection Titles should have between 1 and 3 items"
+            exit 1
+
+    "\\begin{tabular}{@{}p{\\textwidth}}"
+    + res
+    + "\\end{tabular}\\\\[0.5ex]\n"
+    + "%"
+
 (* convert list of formatted texts to one string *)
 let rec evalFormattedTexts (formattedTexts: FormattedText list) =
     let rec evalFormattedText (f: FormattedText) =
         match f with
+        | Modifier(s, f) when s = "SUBSECTION_TITLE" -> evalSubsectionTitle f
         | Modifier(s, f) ->
             let res = evalFormattedTexts f
             evalModifierCommand s res
@@ -125,7 +193,7 @@ let rec evalLines (lines: Line list) (caps: ModuleCap list) : string =
         + "\n"
         + (evalLines ls' caps')
     | FormattedTexts(line) :: ls', End :: caps' ->
-        "\\end{itemize}\n"
+        "\\end{itemize}~\\\\[-1ex]\n"
         + (evalFormattedTexts line)
         + "\\\\ \n"
         + (evalLines ls' caps')
