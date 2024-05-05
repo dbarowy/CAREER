@@ -15,6 +15,7 @@
 \usepackage{epsfig}
 \usepackage[space]{grffile}
 \usepackage{booktabs}
+\usepackage{tabularx}
 \usepackage{forest}
 \usepackage{enumitem}   
 \usepackage{fancyvrb}
@@ -131,21 +132,17 @@ The core concept of this language is that there are modifiers and text. Text is 
 
 \subsection*{Formal Syntax}
 
-$<$expression$>$ ::= $<$line$>$$<$expression$>^*$\\
+$<$expression$>$ ::= $<$line$>^*$\\
 $<$line$>$ ::= $<$line\_content$>$ \textbackslash n \\
-$<$line\_content$>$ ::= *LINE\textvisiblespace$<$formatted\_text$>^*$ \\
+$<$line\_content$>$ ::= *ITEM\textvisiblespace$<$formatted\_text$>^*$ \\
 	$|$ *SUBSECTION\_TITLE \textvisiblespace$<$subsection\_content$>^*$ \\
 	$| <$formatted\_text$>^*$ \\
-$<$subsection\_content$>$ ::= [$<$string$>$] $|$ [$<$string$>$][$<$string$>$] $|$ [$<$string$>$][$<$string$>$][$<$string$>$] \\
+$<$subsection\_content$>$ ::= $<$string$>$ | [$<$string$>$] $|$ [$<$string$>$][$<$string$>$] $|$ [$<$string$>$][$<$string$>$][$<$string$>$] \\
 $<$formatted\_text$>$ ::= $<$modifier$> | <$string$>$\\
 $<$modifier$>$ ::= *$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^*$] $| <$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^*$ \\
 $<$mod\_fun$>$ ::= HEADER \\
 	$|$ SUBHEADER \\
 	$|$ SECTION \\
-	$|$ TITLE\_CENTER \\
-	$|$ TITLE\_LEFT \\
-	$|$ TITLE\_RIGHT \\
-	$|$ ITEM \\
 	$|$ BOLD \\
 	$|$ UNDERLINE \\
 ~\\
@@ -153,15 +150,102 @@ $<$string$>$ ::=  $<$str\_char$>^*$ \\
 $<$str\_char$>$ ::= $c \in \{\text{all characters}\} \wedge c \not\in \{\text{\textbackslash n, *, [, ]}\}$\\
 
 \subsection*{Semantics}
-CAREER is essentially composed of many lines of strings. Thus, the primitive form in CAREER can be thought of as either a character or a string (a list of characters), depending on how deep you want to go into the program implementation. Basic strings can only be composed of numbers, letters, spaces, and punctuation (this is a potential shortcoming that could be improved in the future). Modifier function strings (which are used as commands for text formatting) can have any character. However, all of these function strings are defined within the definition of CAREER itself, instead of in an actual CAREER program. Modifier function strings are all uppercase and snake case by convention. \\
 
-The combining forms for modifier strings and basic strings are modifiers, lines, and expressions. Modifiers combine modifying functions and other text (other text could include strings or text that has already had some different modifying function applied to it, or both). The left side of a modifier is a modifier function string such as "*SUBHEADER" or "*BOLD". The right side of a modifier is either another modifier or a basic string, or both. Modifier bodies extend as far right as possible. This means that, in the example "*ITEM *BOLD hello world", the BOLD command would apply to the entire string "hello world". If the user wants BOLD to only apply to a part of the string, they can use quotes to limit the scope of the function. Returning to the previous example, this would look like '*ITEM *BOLD "hello" world', a command which would result in only "hello" being bolded. The other combining form in CAREER is a line. \\
+\subsubsection*{String}
+\textbf{Syntax}: 
+$<$string$>$
 
-There are a few special modifiers in CAREER that can only be applied under specific conditions. The first is the ITEM modifier. This modifier can only be applied at the start of a line, as it doesn't make much sense to apply a bullet point item modification to only part of a line of text. The other special modifier is the SUBSECTION\_TITLE modifier. This modifier can also only be applied at the start of the line, and it takes between one and three 'arguments'. These arguments are given using brackets (or, if there's only one argument, just simple text), and must be unmodified strings. SUBSECTION\_TITLE, given one argument, centers some bolded and underlined text on a line. Given two arguments, the modifier places the first argument bolded on the left side of the line, and the second argument bolded on the right side. Finally, given three arguments, the modifier places the first and third argument bolded on the left/right side of the line, and the second argument bolded and underlined in the middle. \\
+\textbf{Abstract Syntax}: 
+String of string
 
-A line is simply a list of modifiers and strings, and each line corresponds with an actual line from the input and outputs an actual formatted line in the resluting resume. The result of evaluating '*ITEM *BOLD [hello] world' would be Line([Modifier ("ITEM", [Modifier ("BOLD", [String "hello"]); String " world"])]). Notice that the modifier "BOLD" only applies to the string "hello", as hello is surrounded by brackets, but the modifier "ITEM" applies to all parts of the string. Finally, an expression is simply a list of lines. Each AST will only contain one expression which contains a list of all of the lines in a resume. \\
+\textbf{Prec./Assoc.}: 
+6/left
 
-CAREER will take the path to a text file as input, and will first transform that text file into an AST. Evaluating the AST should result in a latex file that, when built, outputs a well formatted resume. There will be a command that, when including in the running of a CAREER program, will automatically compile the resulting latex file into a pdf. Each string can be fed into the latex file exactly as it is. Each modifier will be transformed into a latex command that wraps the modifiers inner text, formatting that text in the desired fashion. Each line will combine all of the resulting latex-formatted strings from each of its inner modules and strings. Finally, the expression will simply combine all of the latex-formatted line results into one complete resume. \href{https://docs.google.com/document/d/15fBfxPwQn3QLyHhpzfUlZ3BqqN9IacEPcBfZqfHSUe0/edit?usp=sharing}{This resume} (which is just my resume, I'm planning on making this anonymous later) is an example of what a CAREER output could look like (based on the first program example).
+\textbf{Meaning}:
+A string is, as you might expect, a string. It can contain any characters besides \textbackslash n, *, [, and ]. Each of these characters is used for a specific purpose in CAREER and thus cannot be used in basic strings.
+
+
+\subsubsection*{Modifier}
+\textbf{Syntax}: 
+*$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^*$]$|$$<$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^*$ 
+
+\textbf{Abstract Syntax}: 
+Modifier of String * (FormattedText list)
+
+\textbf{Prec./Assoc.}: 
+5/left
+
+\textbf{Meaning}:
+A modifier stores some modifying command and a list of formatted texts to apply this modifying command to. Each of these formatted texts must eventually evaluate to a string, and each of the strings in the formatted text list will be combined into one final string. This string will have the modifying function applied to it in the corresponding latex code. For example, the modifying function BOLD applies \textbackslash textbf to all of its inner formatted texts.
+
+
+\subsubsection*{Item Modifier}
+\textbf{Syntax}: 
+*LINE \textvisiblespace $<$formatted\_text$>$
+
+\textbf{Abstract Syntax}: 
+Modifier of string * (FormattedText list)
+
+\textbf{Prec./Assoc.}: 
+3/left
+
+\textbf{Meaning}:
+Item is a special modifier that puts an entire line into bullet point format. Because of this, Item (unlike other modifiers) cannot be applied anywhere within a line; it can only be applied at the start of a line. Thus, the line modifier has its own, special syntax that is taken into account by the Line combining form.
+
+\subsubsection*{Subsection Title Modifier}
+\textbf{Syntax}: 
+*SUBSECTION\_TITLE \textvisiblespace $<$string$>$ $|$ 1-3 * [$<$string$>$]
+
+\textbf{Abstract Syntax}: 
+Modifier of string * (String list)
+
+\textbf{Prec./Assoc.}: 
+4/left
+
+\textbf{Meaning}:
+The subsection title modifier is another special modifier. This modifier can also only be applied at the beginning of a line. It takes one to three arguments, all of which must be Strings. These arguments must be surrounded by brackets to deliniate between each argument. If there are no brackets, CAREER will assume the entire string after the modifying function is one argument. Given one argument, CAREER centers the given text, bolded and underlined, on a line. Given two arguments, the modifier places the first argument bolded on the left side of the line and the second argument bolded on the right side. Finally, given three arguments, CAREER places the first and third argument bolded on the left/right side of the line, and the second argument bolded and underlined in the middle.
+
+
+\subsubsection*{Formatted Text}
+\textbf{Syntax}: 
+$<$modifier$>$ $|$ $<$string$>$
+
+\textbf{Abstract Syntax}:
+FormattedText of Modifier or String
+
+\textbf{Prec./Assoc.}: 
+2/left
+
+\textbf{Meaning}:
+FormattedText is essentially a container that can store either Modifiers or Strings. This is a necessary combining form because Modifiers must be able to be applied to other modifiers. Thus, modifiers are applied to lists of formatted texts, and each formatted text can store either a modifier or a string.
+
+\subsubsection*{Line}
+\textbf{Syntax}: 
+*ITEM\textvisiblespace$<$formatted\_text$>^*$ \textbackslash n \\
+$|$ *SUBSECTION\_TITLE \textvisiblespace$<$subsection\_content$>^*$ \textbackslash n \\
+$| <$formatted\_text$>^*$ \textbackslash n
+
+\textbf{Abstract Syntax}:
+Line of FormattedText list
+
+\textbf{Prec./Assoc.}: 
+1/left
+
+\textbf{Meaning}:
+One line in CAREER represents one input line in the given text file and one output line in the resulting tex/pdf file. A line is simply a list of formatted texts, meaning a list of modifiers and strings. A line is stopped by the new line character, and outputs a string with a new line character at the end.
+
+\subsubsection*{Expression}
+\textbf{Syntax}: 
+$<$line$>^*$
+
+\textbf{Abstract Syntax}:
+Expression of Line list
+
+\textbf{Prec./Assoc.}: 
+1/left
+
+\textbf{Meaning}:
+An expression is simply a list of lines. Each CAREER ast is composed of one expression. This one expression holds all of the lines that were given as an input and will eventually be outputted as formatted latex.
 
 % DO NOT DELETE ANYTHING BELOW THIS LINE
 \end{document}

@@ -94,10 +94,10 @@ let rec evalModifierCommand (command: string) (inner: string) =
         + sprintf "\\normalsize %s\n" inner
         + "\\end{center}\n"
         + "\\vspace{-6ex}~"
+    | "SECTION" -> sprintf "\\textbf{%s}\\\\[-2ex]\n" inner + "\\rule{\\textwidth}{0.4pt}"
     | "ITEM" -> sprintf "\\item %s" inner
     | "BOLD" -> sprintf "\\textbf{%s}" inner
     | "UNDERLINE" -> sprintf "\\underline{%s}" inner
-    | "SECTION" -> sprintf "\\textbf{%s}\\\\[-2ex]\n" inner + "\\rule{\\textwidth}{0.4pt}"
     | _ -> inner // TODO: add rest of commands, error out here when no commands are matches
 
 (*

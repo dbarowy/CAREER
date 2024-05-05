@@ -82,9 +82,6 @@ let modifierFunction =
         (pstr "HEADER"
          <|> pstr "SUBHEADER"
          <|> pstr "SECTION"
-         <|> pstr "TITLE_CENTER"
-         <|> pstr "TITLE_LEFT"
-         <|> pstr "TITLE_RIGHT"
          <|> pstr "BOLD"
          <|> pstr "UNDERLINE"
          <!> "modifierFunction")
@@ -95,7 +92,7 @@ let limitedFormattedText =
 
 (* full line modified by ITEM function  *)
 let itemModifier =
-    pseq (pleft itemModifierFunction pws1) (limitedFormattedText <|> (pmany1 formattedText)) Modifier
+    pseq (pleft itemModifierFunction pws0) (limitedFormattedText <|> (pmany1 formattedText)) Modifier
     <!> "itemModifier"
 
 let oneToNRepeats p n =
