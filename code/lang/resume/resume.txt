@@ -4,7 +4,7 @@
 
 *SECTION Education
 *SUBSECTION_TITLE [Williams, MA] [Williams College] [Fall 2021 – May 2025]
-*ITEM GPA 3.92, anticipated B.A. with double major in Computer Science & Philosophy
+*ITEM anticipated B.A. with double major in Computer Science & Philosophy
 *ITEM Teaching Assistant for introductory and upper-level CS courses over five semesters
 *ITEM Activities include PAC Comedy Club, Opinions Columnist for the Williams Record Newspaper, WSO (student run website for Williams College)
 
