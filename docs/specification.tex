@@ -139,8 +139,8 @@ $<$line\_content$>$ ::= *ITEM\textvisiblespace$<$formatted\_text$>^+$ \\
 	$| <$formatted\_text$>^+$ \\
 $<$subsection\_content$>$ ::= $<$string$>$ $|$ [$<$string$>$] $|$ [$<$string$>$][$<$string$>$] $|$ [$<$string$>$][$<$string$>$][$<$string$>$] \\
 $<$formatted\_text$>$ ::= $<$modifier$> | <$string$>$\\
-$<$modifier$>$ ::= *$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^+$] $|$ *$<$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^+$ \\
-$<$mod\_fun$>$ ::= HEADER \\
+$<$modifier$>$ ::= *$<$modifying\_function$>$\textvisiblespace[$<$formatted\_text$>^+$] $|$ *$<$modifying\_function$>$\textvisiblespace$<$formatted\_text$>^+$ \\
+$<$modifying\_function$>$ ::= HEADER \\
 	$|$ SUBHEADER \\
 	$|$ SECTION \\
 	$|$ BOLD \\
@@ -215,10 +215,10 @@ Item is a special modifier that puts an entire line into bullet point format. Be
 *SUBSECTION\_TITLE \textvisiblespace $<$string$>$ \\
 $|$ *SUBSECTION\_TITLE \textvisiblespace [$<$string$>$] \\
 $|$ *SUBSECTION\_TITLE \textvisiblespace [$<$string$>$]\textvisiblespace[$<$string$>$] \\
-$|$ *SUBSECTION\_TITLE \textvisiblespace [$<$string$>$]\textvisiblespace[$<$string$>$]\textvisiblespace[$<$string$>$] \\
+$|$ *SUBSECTION\_TITLE \textvisiblespace [$<$string$>$]\textvisiblespace[$<$string$>$]\textvisiblespace[$<$string$>$]
 
 \textbf{Abstract Syntax}: 
-Modifier of string * (String list)
+Modifier of string * (FormattedText list)
 
 \textbf{Prec./Assoc.}: 
 5/left
@@ -229,7 +229,7 @@ The subsection title modifier is another special modifier. This modifier can als
 
 \subsubsection*{Modifier}
 \textbf{Syntax}: 
-*$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^+$] $|$ $<$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^+$ 
+*$<$modifying\_function$>$\textvisiblespace[$<$formatted\_text$>^+$] $|$ $<$modifying\_function$>$\textvisiblespace$<$formatted\_text$>^+$ 
 
 \textbf{Abstract Syntax}: 
 Modifier of String * (FormattedText list)
