@@ -54,9 +54,9 @@
 
 % Edit below as instructed
 
-\title{CAREER (Comprehensive Automated Resume \& Employment Experience Renderer) Language Specification} % Replace SnappyLanguageName with your project's name
+\title{CAREER (Comprehensive Automated Resume \& Employment Experience Renderer) Language Specification}
 
-\author{Harry Albert} % Replace these with real partner names.
+\author{Harry Albert}
 
 \begin{document}
   
@@ -152,99 +152,6 @@ $<$str\_char$>$ ::= $c \in \{\text{all characters}\} \wedge c \not\in \{\text{\t
 
 \subsection*{Semantics}
 
-\subsubsection*{String}
-\textbf{Syntax}: 
-$<$string$>$
-
-\textbf{Abstract Syntax}: 
-String of string
-
-\textbf{Prec./Assoc.}: 
-7/left
-
-\textbf{Meaning}:
-A string is, as you might expect, a string. It can contain any characters besides \textbackslash n, *, [, and ]. Each of these characters is used for a specific purpose in CAREER and thus cannot be used in basic strings.
-
-\subsubsection*{Modifying Function}
-\textbf{Syntax}: 
-HEADER | SUBHEADER | SECTION | BOLD | UNDERLINE | LINK
-
-\textbf{Abstract Syntax}: 
-string
-
-\textbf{Prec./Assoc.}: 
-6/left
-
-\textbf{Meaning}:
-A modifying function is a command that tells CAREER how to format some following formatted text. What each of these modifying functions does should be clear from their naming. Modifying functions are preceded by the * character when used in a full modifier. This allows for the distinction between modifying functions and normal strings.
-
-\subsubsection*{Modifier}
-\textbf{Syntax}: 
-*$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^*$]$|$$<$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^*$ 
-
-\textbf{Abstract Syntax}: 
-Modifier of String * (FormattedText list)
-
-\textbf{Prec./Assoc.}: 
-5/left
-
-\textbf{Meaning}:
-A modifier stores some modifying command and a list of formatted texts to apply this modifying command to. Each of these formatted texts must eventually evaluate to a string, and each of the strings in the formatted text list will be combined into one final string. This string will have the modifying function applied to it in the corresponding latex code. For example, the modifying function BOLD applies \textbackslash textbf to all of its inner formatted texts.
-
-\subsubsection*{Item Modifier}
-\textbf{Syntax}: 
-*LINE \textvisiblespace $<$formatted\_text$>$
-
-\textbf{Abstract Syntax}: 
-Modifier of string * (FormattedText list)
-
-\textbf{Prec./Assoc.}: 
-3/left
-
-\textbf{Meaning}:
-Item is a special modifier that puts an entire line into bullet point format. Because of this, Item (unlike other modifiers) cannot be applied anywhere within a line; it can only be applied at the start of a line. Thus, the line modifier has its own, special syntax that is taken into account by the Line combining form.
-
-\subsubsection*{Subsection Title Modifier}
-\textbf{Syntax}: 
-*SUBSECTION\_TITLE \textvisiblespace $<$string$>$ $|$ 1-3 * [$<$string$>$]
-
-\textbf{Abstract Syntax}: 
-Modifier of string * (String list)
-
-\textbf{Prec./Assoc.}: 
-4/left
-
-\textbf{Meaning}:
-The subsection title modifier is another special modifier. This modifier can also only be applied at the beginning of a line. It takes one to three arguments, all of which must be Strings. These arguments must be surrounded by brackets to deliniate between each argument. If there are no brackets, CAREER will assume the entire string after the modifying function is one argument. Given one argument, CAREER centers the given text, bolded and underlined, on a line. Given two arguments, the modifier places the first argument bolded on the left side of the line and the second argument bolded on the right side. Finally, given three arguments, CAREER places the first and third argument bolded on the left/right side of the line, and the second argument bolded and underlined in the middle.
-
-\subsubsection*{Formatted Text}
-\textbf{Syntax}: 
-$<$modifier$>$ $|$ $<$string$>$
-
-\textbf{Abstract Syntax}:
-FormattedText of Modifier or String
-
-\textbf{Prec./Assoc.}: 
-2/left
-
-\textbf{Meaning}:
-FormattedText is essentially a container that can store either Modifiers or Strings. This is a necessary combining form because Modifiers must be able to be applied to other modifiers. Thus, modifiers are applied to lists of formatted texts, and each formatted text can store either a modifier or a string.
-
-\subsubsection*{Line}
-\textbf{Syntax}: 
-*ITEM\textvisiblespace$<$formatted\_text$>^*$ \textbackslash n \\
-$|$ *SUBSECTION\_TITLE \textvisiblespace$<$subsection\_content$>^*$ \textbackslash n \\
-$| <$formatted\_text$>^*$ \textbackslash n
-
-\textbf{Abstract Syntax}:
-Line of FormattedText list
-
-\textbf{Prec./Assoc.}: 
-1/left
-
-\textbf{Meaning}:
-One line in CAREER represents one input line in the given text file and one output line in the resulting tex/pdf file. A line is simply a list of formatted texts, meaning a list of modifiers and strings. A line is stopped by the new line character, and outputs a string with a new line character at the end.
-
 \subsubsection*{Expression}
 \textbf{Syntax}: 
 $<$line$>^*$
@@ -257,6 +164,106 @@ Expression of Line list
 
 \textbf{Meaning}:
 An expression is simply a list of lines. Each CAREER ast is composed of one expression. This one expression holds all of the lines that were given as an input and will eventually be outputted as formatted latex.
+
+
+\subsubsection*{Line}
+\textbf{Syntax}: 
+*ITEM\textvisiblespace$<$formatted\_text$>^*$ \textbackslash n \\
+$|$ *SUBSECTION\_TITLE \textvisiblespace$<$subsection\_content$>^*$ \textbackslash n \\
+$| <$formatted\_text$>^*$ \textbackslash n
+
+\textbf{Abstract Syntax}:
+Line of FormattedText list
+
+\textbf{Prec./Assoc.}: 
+2/left
+
+\textbf{Meaning}:
+One line in CAREER represents one input line in the given text file and one output line in the resulting tex/pdf file. A line is simply a list of formatted texts, meaning a list of modifiers and strings. A line is stopped by the new line character, and outputs a string with a new line character at the end.
+
+
+\subsubsection*{Formatted Text}
+\textbf{Syntax}: 
+$<$modifier$>$ $|$ $<$string$>$
+
+\textbf{Abstract Syntax}:
+FormattedText of Modifier or String
+
+\textbf{Prec./Assoc.}: 
+3/left
+
+\textbf{Meaning}:
+FormattedText is essentially a container that can store either Modifiers or Strings. This is a necessary combining form because Modifiers must be able to be applied to other modifiers. Thus, modifiers are applied to lists of formatted texts, and each formatted text can store either a modifier or a string.
+
+
+\subsubsection*{Item Modifier}
+\textbf{Syntax}: 
+*LINE \textvisiblespace $<$formatted\_text$>$
+
+\textbf{Abstract Syntax}: 
+Modifier of string * (FormattedText list)
+
+\textbf{Prec./Assoc.}: 
+4/left
+
+\textbf{Meaning}:
+Item is a special modifier that puts an entire line into bullet point format. Because of this, Item (unlike other modifiers) cannot be applied anywhere within a line; it can only be applied at the start of a line. Thus, the line modifier has its own, special syntax that is taken into account by the Line combining form.
+
+
+\subsubsection*{Subsection Title Modifier}
+\textbf{Syntax}: 
+*SUBSECTION\_TITLE \textvisiblespace $<$string$>$ $|$ 1-3 * [$<$string$>$]
+
+\textbf{Abstract Syntax}: 
+Modifier of string * (String list)
+
+\textbf{Prec./Assoc.}: 
+5/left
+
+\textbf{Meaning}:
+The subsection title modifier is another special modifier. This modifier can also only be applied at the beginning of a line. It takes one to three arguments, all of which must be Strings. These arguments must be surrounded by brackets to deliniate between each argument. If there are no brackets, CAREER will assume the entire string after the modifying function is one argument. Given one argument, CAREER centers the given text, bolded and underlined, on a line. Given two arguments, the modifier places the first argument bolded on the left side of the line and the second argument bolded on the right side. Finally, given three arguments, CAREER places the first and third argument bolded on the left/right side of the line, and the second argument bolded and underlined in the middle.
+
+
+\subsubsection*{Modifier}
+\textbf{Syntax}: 
+*$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^*$]$|$$<$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^*$ 
+
+\textbf{Abstract Syntax}: 
+Modifier of String * (FormattedText list)
+
+\textbf{Prec./Assoc.}: 
+6/left
+
+\textbf{Meaning}:
+A modifier stores some modifying command and a list of formatted texts to apply this modifying command to. Each of these formatted texts must eventually evaluate to a string, and each of the strings in the formatted text list will be combined into one final string. This string will have the modifying function applied to it in the corresponding latex code. For example, the modifying function BOLD applies \textbackslash textbf to all of its inner formatted texts.
+
+
+\subsubsection*{Modifying Function}
+\textbf{Syntax}: 
+HEADER | SUBHEADER | SECTION | BOLD | UNDERLINE | LINK
+
+\textbf{Abstract Syntax}: 
+string
+
+\textbf{Prec./Assoc.}: 
+7/left
+
+\textbf{Meaning}:
+A modifying function is a command that tells CAREER how to format some following formatted text. What each of these modifying functions does should be clear from their naming. Modifying functions are preceded by the * character when used in a full modifier. This allows for the distinction between modifying functions and normal strings.
+
+
+\subsubsection*{String}
+\textbf{Syntax}: 
+$<$string$>$
+
+\textbf{Abstract Syntax}: 
+String of string
+
+\textbf{Prec./Assoc.}: 
+8/left
+
+\textbf{Meaning}:
+A string is, as you might expect, a string. It can contain any characters besides \textbackslash n, *, [, and ]. Each of these characters is used for a specific purpose in CAREER and thus cannot be used in basic strings.
 
 % DO NOT DELETE ANYTHING BELOW THIS LINE
 \end{document}
