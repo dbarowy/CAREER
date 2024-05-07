@@ -129,7 +129,7 @@ let line =
     <!> "line"
 
 (* list of all lines in input/output resume *)
-exprImpl := pmany1 (pleft line (pmany1 (pchar '\n'))) |>> Lines <!> "expr"
+exprImpl := pmany1 (pleft line (pmany1 pnl)) |>> Lines <!> "expr"
 
 (* final grammar (just one expr that should reach the end of the file) *)
 let grammar = pleft expr peof <!> "grammar"

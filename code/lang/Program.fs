@@ -5,7 +5,7 @@ open Evaluator
 [<EntryPoint>]
 let main args =
     if args.Length <> 1 || not (File.Exists(args[0])) then
-        printfn "Usage: dotnet run filename.txt"
+        printfn "Usage: dotnet run path/to/file.txt"
         exit 1
 
     if not (args[0].EndsWith ".txt") then
