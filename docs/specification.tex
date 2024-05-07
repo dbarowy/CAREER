@@ -139,7 +139,7 @@ $<$line\_content$>$ ::= *ITEM\textvisiblespace$<$formatted\_text$>^*$ \\
 	$| <$formatted\_text$>^*$ \\
 $<$subsection\_content$>$ ::= $<$string$>$ | [$<$string$>$] $|$ [$<$string$>$][$<$string$>$] $|$ [$<$string$>$][$<$string$>$][$<$string$>$] \\
 $<$formatted\_text$>$ ::= $<$modifier$> | <$string$>$\\
-$<$modifier$>$ ::= *$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^*$] $| <$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^*$ \\
+$<$modifier$>$ ::= *$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^*$] $|$ *$<$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^*$ \\
 $<$mod\_fun$>$ ::= HEADER \\
 	$|$ SUBHEADER \\
 	$|$ SECTION \\
@@ -160,11 +160,23 @@ $<$string$>$
 String of string
 
 \textbf{Prec./Assoc.}: 
-6/left
+7/left
 
 \textbf{Meaning}:
 A string is, as you might expect, a string. It can contain any characters besides \textbackslash n, *, [, and ]. Each of these characters is used for a specific purpose in CAREER and thus cannot be used in basic strings.
 
+\subsubsection*{Modifying Function}
+\textbf{Syntax}: 
+HEADER | SUBHEADER | SECTION | BOLD | UNDERLINE | LINK
+
+\textbf{Abstract Syntax}: 
+string
+
+\textbf{Prec./Assoc.}: 
+6/left
+
+\textbf{Meaning}:
+A modifying function is a command that tells CAREER how to format some following formatted text. What each of these modifying functions does should be clear from their naming. Modifying functions are preceded by the * character when used in a full modifier. This allows for the distinction between modifying functions and normal strings.
 
 \subsubsection*{Modifier}
 \textbf{Syntax}: 
@@ -178,7 +190,6 @@ Modifier of String * (FormattedText list)
 
 \textbf{Meaning}:
 A modifier stores some modifying command and a list of formatted texts to apply this modifying command to. Each of these formatted texts must eventually evaluate to a string, and each of the strings in the formatted text list will be combined into one final string. This string will have the modifying function applied to it in the corresponding latex code. For example, the modifying function BOLD applies \textbackslash textbf to all of its inner formatted texts.
-
 
 \subsubsection*{Item Modifier}
 \textbf{Syntax}: 
@@ -205,7 +216,6 @@ Modifier of string * (String list)
 
 \textbf{Meaning}:
 The subsection title modifier is another special modifier. This modifier can also only be applied at the beginning of a line. It takes one to three arguments, all of which must be Strings. These arguments must be surrounded by brackets to deliniate between each argument. If there are no brackets, CAREER will assume the entire string after the modifying function is one argument. Given one argument, CAREER centers the given text, bolded and underlined, on a line. Given two arguments, the modifier places the first argument bolded on the left side of the line and the second argument bolded on the right side. Finally, given three arguments, CAREER places the first and third argument bolded on the left/right side of the line, and the second argument bolded and underlined in the middle.
-
 
 \subsubsection*{Formatted Text}
 \textbf{Syntax}: 
