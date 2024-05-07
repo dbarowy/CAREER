@@ -2,8 +2,6 @@ module Parser
 
 open Combinator
 
-// TODO: add link modifier
-
 (* flag to print debug info *)
 let DEBUG = false
 
@@ -26,13 +24,15 @@ let formattedText, formattedTextImpl = recparser ()
 
 (* special characters that need to be prefaced by / in latex *)
 let backslashReservedCharacters = [ '#'; '$'; '%'; '&'; '~'; '_'; '^'; '{'; '}' ]
+(* special characters reserved for CAREER usage *)
+let careerReservedCharacters = [ '*'; '\n'; '['; ']' ]
+(* special characters that need to be surrounded by $ in latex *)
+let dolarReservedCharacters = [ '>'; '<'; '\\' ]
+
 
 let backslashReservedChar =
     ((psat (fun (c) -> List.contains c backslashReservedCharacters))
      |>> (fun (c) -> (sprintf "\\%c" c)))
-
-(* special characters that need to be surrounded by $ in latex *)
-let dolarReservedCharacters = [ '>'; '<'; '\\' ]
 
 let dolarReservedChar =
     ((psat (fun (c) -> List.contains c dolarReservedCharacters))
@@ -43,10 +43,7 @@ let preservedchar = (backslashReservedChar <|> dolarReservedChar) |>> String
 (* any non-special character *)
 let goodChar =
     (psat (fun (c) ->
-        c <> '*'
-        && c <> '\n'
-        && c <> '['
-        && c <> ']'
+        not (List.contains c careerReservedCharacters)
         && not (List.contains c backslashReservedCharacters)
         && not (List.contains c dolarReservedCharacters)))
     <!> "goodChar"
@@ -58,7 +55,7 @@ let pgoodstr = pmany1 goodChar |>> stringify |>> String <!> "pgoodstr"
 let rec formattedTextsToString fs =
     match fs with
     | String(s) :: fs' -> s + (formattedTextsToString fs')
-    | Modifier(_) :: fs' ->
+    | Modifier(_) :: _ ->
         printf "Uh oh, an error occurred"
         exit 1
     | [] -> ""
@@ -84,6 +81,7 @@ let modifierFunction =
          <|> pstr "SECTION"
          <|> pstr "BOLD"
          <|> pstr "UNDERLINE"
+         <|> pstr "LINK"
          <!> "modifierFunction")
 
 (* formatted text limited by "" *)
@@ -108,7 +106,7 @@ let subsectionTitleModifier =
 
 (* general text sequence formatted by some modifier *)
 let modifier =
-    pseq (pleft modifierFunction pws1) (limitedFormattedText <|> (pmany1 formattedText)) Modifier
+    pseq (pleft modifierFunction pws0) (limitedFormattedText <|> (pmany1 formattedText)) Modifier
     <!> "modifier"
 
 (* either a modified text sequence or a tex formatted string *)

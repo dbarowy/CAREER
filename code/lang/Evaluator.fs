@@ -3,6 +3,7 @@ module Evaluator
 open Parser
 open Shell
 open System.IO
+open System.Text.RegularExpressions
 
 (* 
     Record whether a line is the start/end of a list, 
@@ -16,9 +17,10 @@ type ModuleCap =
 
 (* Intro to output latex file *)
 let doc_preamble =
-    [ "\\documentclass[10pt]{article}"
+    [ "\\documentclass[font_size]{extarticle}"
       "\\usepackage{enumitem}"
       "\\usepackage{geometry}"
+      "\\usepackage{hyperref}"
       "\\geometry{top=.75in, bottom=.75in, left=.5in, right=.5in}"
       "\\geometry{paperwidth=8.5in, paperheight=11in}"
       "\\setlength{\\parindent}{0pt}"
@@ -57,6 +59,7 @@ let find_list_caps (ast: Expression) : ModuleCap list =
     match ast with
     | Lines(lines) -> find_list_caps' lines false
 
+(* find the start and end of all lists, and record them for later use *)
 let find_title_caps (ast: Expression) : ModuleCap list =
     let rec find_list_caps' (lines: Line list) (previousItem: bool) =
         match lines with
@@ -85,7 +88,7 @@ let rec evalModifierCommand (command: string) (inner: string) =
     | "HEADER" ->
         "\\vspace{-\\baselineskip}\n"
         + "\\begin{center}\n"
-        + sprintf "\\Large %s\n" inner
+        + sprintf "\\Large \\textbf{%s}\n" inner
         + "\\end{center}\n"
         + "\\vspace{-6.5ex}~"
     | "SUBHEADER" ->
@@ -98,25 +101,16 @@ let rec evalModifierCommand (command: string) (inner: string) =
     | "ITEM" -> sprintf "\\item %s" inner
     | "BOLD" -> sprintf "\\textbf{%s}" inner
     | "UNDERLINE" -> sprintf "\\underline{%s}" inner
-    | _ -> inner // TODO: add rest of commands, error out here when no commands are matches
+    | "LINK" -> sprintf "\\url{%s}" inner
+    | _ -> inner
 
-(*
-\begin{tabular}{@{}p{\textwidth}}
-  \begin{minipage}[t]{0.333\textwidth}
-    \raggedright
-    Left aligned text
-  \end{minipage}%
-  \begin{minipage}[t]{0.333\textwidth}
-    \centering
-    Center aligned text
-  \end{minipage}%
-  \begin{minipage}[t]{0.333\textwidth}
-    \raggedleft
-    Right aligned text
-  \end{minipage}
-\end{tabular}
+(* 
+    evaluate a subsection title.
+    1 argument  -> bol + underlined center alligned text
+    2 arguments -> bold text alligned left, bold text alligned right
+    3 arguments -> bold text alligned left, bold + underligned text center alligned
+                   bold text alligned right
 *)
-
 let rec evalSubsectionTitle (formattedTexts: FormattedText list) =
     let rec textsToString texts =
         match texts with
@@ -205,37 +199,75 @@ let rec evalLines (lines: Line list) (caps: ModuleCap list) : string =
     | [], _ -> "\\end{itemize}\n"
     | _ -> ""
 
+(* scan pdflatex output to get the pdf page length *)
+let get_output_page_length (output: string) =
+    let pattern = @"(\d+) pages,"
+    let res = Regex.Match(output, pattern)
+
+    if res.Success then
+        Some(int (res.Groups[1].Value))
+    else
+        None
+
+(* 
+    Compile ast to .tex file, and compile .tex file using pdflated
+    if the user has pdflatex installed.
+    Automatically re-compile with a smaller font (down to size 8 font)
+    if the resume pdf is over 1 page long.
+*)
+let rec compile_output (lines: Line list) (list_caps: ModuleCap list) (file_name: string) (font_size: int) =
+    // latex preamble with correct font size
+    let formatted_preamble =
+        doc_preamble.Replace("documentclass[font_size]", (sprintf "documentclass[%dpt]" font_size))
+
+    // create formatted latex file, output to filename.tex
+    let res = formatted_preamble + (evalLines lines list_caps) + doc_ending
+    let tex_file_name = file_name.Replace(".txt", ".tex")
+    System.IO.File.WriteAllText(tex_file_name, res)
+
+    // test if user has pdflatex installed
+    let test_for_pdflatex =
+        executeShellCommand "pdflatex --version" |> Async.RunSynchronously
+
+    // user hsa pdflatex installed
+    if test_for_pdflatex.StandardOutput.StartsWith("pdfTeX") then
+        let dir_path = Path.GetDirectoryName(file_name)
+
+        let output_command =
+            if dir_path = "" then
+                ""
+            else
+                // pdflatex requires a special flag to output in the same directory as the input
+                (sprintf "-output-directory %s" dir_path)
+
+        let command = sprintf "pdflatex -halt-on-error %s %s" output_command tex_file_name
+        let compile_res = executeShellCommand command |> Async.RunSynchronously
+
+        if compile_res.StandardOutput.Contains("Fatal error occurred") then
+            printfn "Uh oh, something went wrong with your resume compilation!"
+            printfn "Run `pdflatex %s` in the shell to get more info on the issue." tex_file_name
+            exit 1
+        else
+            let res = get_output_page_length compile_res.StandardOutput
+
+            let sys_message =
+                sprintf "CARRER resume succesfully compiled to %s" (file_name.Replace(".txt", ".pdf"))
+
+            match res with
+            | Some(num) ->
+                // any font size less than 8 isn't supported by latex (and would probably look bad anyways)
+                if num > 1 && font_size > 8 then
+                    compile_output lines list_caps file_name (font_size - 1)
+                else
+                    printfn "%s" sys_message
+            | None -> printfn "%s" sys_message
+    else
+        printfn "CARRER resume succesfully compiled to %s" tex_file_name
+        printfn "Download pdflatex (or use overleaf) to compile %s" tex_file_name
+
 (* evaluate txt file and convert to latex, compile latex if possible *)
 let eval (ast: Expression) (file_name: string) : unit =
     let list_caps = find_list_caps ast
 
     match ast with
-    | Lines(lines) ->
-        let res = doc_preamble + (evalLines lines list_caps) + doc_ending
-        let tex_file_name = file_name.Replace(".txt", ".tex")
-        System.IO.File.WriteAllText(tex_file_name, res)
-
-        let test_package =
-            executeShellCommand "pdflatex --version" |> Async.RunSynchronously
-
-        if test_package.StandardOutput.StartsWith("pdfTeX") then
-            let dir_path = Path.GetDirectoryName(file_name)
-
-            let output_command =
-                if dir_path = "" then
-                    ""
-                else
-                    (sprintf "-output-directory %s" dir_path)
-
-            let command = sprintf "pdflatex -halt-on-error %s %s" output_command tex_file_name
-            let compile_res = executeShellCommand command |> Async.RunSynchronously
-
-            if compile_res.StandardOutput.Contains("Fatal error occurred") then
-                printfn "Uh oh, something went wrong with your resume compilation!"
-                printfn "Run `pdflatex %s` in the shell to get more info on the issue." tex_file_name
-                exit 1
-            else
-                printfn "CARRER resume succesfully compiled to %s" (file_name.Replace(".txt", ".pdf"))
-        else
-            printfn "CARRER resume succesfully compiled to %s" tex_file_name
-            printfn "Download pdflatex (or use overleaf online) to compile %s" tex_file_name
+    | Lines(lines) -> compile_output lines list_caps file_name 10
