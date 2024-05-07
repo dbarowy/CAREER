@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="Shell.fs" />
     <Compile Include="Combinator.fs" />
+    <Compile Include="AST.fs" />
     <Compile Include="Parser.fs" />
     <Compile Include="Evaluator.fs" />
     <Compile Include="Program.fs" />

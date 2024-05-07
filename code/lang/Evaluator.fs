@@ -1,6 +1,6 @@
 module Evaluator
 
-open Parser
+open AST
 open Shell
 open System.IO
 open System.Text.RegularExpressions
