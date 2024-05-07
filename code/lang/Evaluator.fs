@@ -17,19 +17,21 @@ type ModuleCap =
 
 (* Intro to output latex file *)
 let doc_preamble =
-    [ "\\documentclass[font_size]{extarticle}"
+    [ "\\documentclass[font_size]{extarticle}" // will replace later with true font size
       "\\usepackage{enumitem}"
       "\\usepackage{geometry}"
       "\\usepackage{hyperref}"
-      "\\geometry{top=.75in, bottom=.75in, left=.5in, right=.5in}"
+      "\\usepackage{xcolor}"
+      "\\hypersetup{colorlinks,urlcolor={blue!80!black}}" // remove ugly neon box around links, make them blue instead
+      "\\geometry{top=.75in, bottom=.75in, left=.5in, right=.5in}" // reduce margins
       "\\geometry{paperwidth=8.5in, paperheight=11in}"
       "\\setlength{\\parindent}{0pt}"
       "\\begin{document}"
       "\\thispagestyle{empty}" ]
     |> List.fold (fun acc s -> acc + s + "\n") ""
 
-(* Ending to output latex file*)
-let doc_ending = [ "\\end{document}" ] |> List.fold (fun acc s -> acc + s + "\n") ""
+(* Ending to output latex file *)
+let doc_ending = "\\end{document}\n"
 
 (* 
     Latex lists are started/ended with specific commands.

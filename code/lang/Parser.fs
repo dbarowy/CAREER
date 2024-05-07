@@ -22,25 +22,30 @@ and Modifier = string * (FormattedText list)
 let expr, exprImpl = recparser ()
 let formattedText, formattedTextImpl = recparser ()
 
-(* special characters that need to be prefaced by / in latex *)
-let backslashReservedCharacters = [ '#'; '$'; '%'; '&'; '~'; '_'; '^'; '{'; '}' ]
 (* special characters reserved for CAREER usage *)
 let careerReservedCharacters = [ '*'; '\n'; '['; ']' ]
+
+(* special characters that need to be prefaced by / in latex *)
+let backslashReservedCharacters = [ '#'; '$'; '%'; '&'; '~'; '_'; '^'; '{'; '}' ]
+
 (* special characters that need to be surrounded by $ in latex *)
 let dolarReservedCharacters = [ '>'; '<'; '\\' ]
 
 
+(* format \ character for latex so that it appears correctly in the resulting resume *)
 let backslashReservedChar =
     ((psat (fun (c) -> List.contains c backslashReservedCharacters))
      |>> (fun (c) -> (sprintf "\\%c" c)))
 
+(* format $ character for latex so that it appears correctly in the resulting resume *)
 let dolarReservedChar =
     ((psat (fun (c) -> List.contains c dolarReservedCharacters))
      |>> (fun (c) -> if c = '\\' then "$\\backslash$" else (sprintf "$%c$" c)))
 
+(* take a latex reserved char and return a latex formatted version of it *)
 let preservedchar = (backslashReservedChar <|> dolarReservedChar) |>> String
 
-(* any non-special character *)
+(* any non-reserved character *)
 let goodChar =
     (psat (fun (c) ->
         not (List.contains c careerReservedCharacters)
@@ -68,6 +73,7 @@ let formattedString =
 let itemModifierFunction =
     pright (pchar '*') (pstr "ITEM") <!> "item fodifier function"
 
+(* *SUBSECTION_TITLE modifier function (can only be applied at the start of a line) *)
 let subsectionTitleModifierFunction =
     pright (pchar '*') (pstr "SUBSECTION_TITLE")
     <!> "subsection title modifier function"
@@ -93,14 +99,17 @@ let itemModifier =
     pseq (pleft itemModifierFunction pws0) (limitedFormattedText <|> (pmany1 formattedText)) Modifier
     <!> "itemModifier"
 
+(* takes some parser repeated between one and n times (more specific than pmany) *)
 let oneToNRepeats p n =
     (pbind (pmany1 p) (fun c -> if (c.Length <= n) then presult c else pzero))
     <!> "1-3 repeats"
 
+(* one, two, or three arguments that will be fed into subsection title *)
 let subsectionTitleContent =
     oneToNRepeats (pleft (pbetween (pchar '[') formattedString (pchar ']')) (pmany0 (pchar ' '))) 3
     <|> (formattedString |>> (fun (s) -> [ s ]))
 
+(* *TITLE modifier followed by one, two, or three arguments *)
 let subsectionTitleModifier =
     pseq (pleft subsectionTitleModifierFunction pws0) subsectionTitleContent Modifier
 
@@ -122,6 +131,7 @@ let line =
 (* list of all lines in input/output resume *)
 exprImpl := pmany1 (pleft line (pmany1 (pchar '\n'))) |>> Lines <!> "expr"
 
+(* final grammar (just one expr that should reach the end of the file) *)
 let grammar = pleft expr peof <!> "grammar"
 
 (* parser to convert from .txt to AST *)
