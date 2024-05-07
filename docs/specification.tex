@@ -212,7 +212,10 @@ Item is a special modifier that puts an entire line into bullet point format. Be
 
 \subsubsection*{Subsection Title Modifier}
 \textbf{Syntax}: 
-*SUBSECTION\_TITLE \textvisiblespace $<$string$>$ $|$ 1-3 [$<$string$>$]
+*SUBSECTION\_TITLE \textvisiblespace $<$string$>$ \\
+$|$ *SUBSECTION\_TITLE \textvisiblespace [$<$string$>$] \\
+$|$ *SUBSECTION\_TITLE \textvisiblespace [$<$string$>$]\textvisiblespace[$<$string$>$] \\
+$|$ *SUBSECTION\_TITLE \textvisiblespace [$<$string$>$]\textvisiblespace[$<$string$>$]\textvisiblespace[$<$string$>$] \\
 
 \textbf{Abstract Syntax}: 
 Modifier of string * (String list)
