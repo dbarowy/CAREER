@@ -132,14 +132,14 @@ The core concept of this language is that there are modifiers and text. Text is 
 
 \subsection*{Formal Syntax}
 
-$<$expression$>$ ::= $<$line$>^*$\\
+$<$expression$>$ ::= $<$line$>^+$\\
 $<$line$>$ ::= $<$line\_content$>$ \textbackslash n \\
-$<$line\_content$>$ ::= *ITEM\textvisiblespace$<$formatted\_text$>^*$ \\
-	$|$ *SUBSECTION\_TITLE \textvisiblespace$<$subsection\_content$>^*$ \\
-	$| <$formatted\_text$>^*$ \\
-$<$subsection\_content$>$ ::= $<$string$>$ | [$<$string$>$] $|$ [$<$string$>$][$<$string$>$] $|$ [$<$string$>$][$<$string$>$][$<$string$>$] \\
+$<$line\_content$>$ ::= *ITEM\textvisiblespace$<$formatted\_text$>^+$ \\
+	$|$ *SUBSECTION\_TITLE \textvisiblespace$<$subsection\_content$>^+$ \\
+	$| <$formatted\_text$>^+$ \\
+$<$subsection\_content$>$ ::= $<$string$>$ $|$ [$<$string$>$] $|$ [$<$string$>$][$<$string$>$] $|$ [$<$string$>$][$<$string$>$][$<$string$>$] \\
 $<$formatted\_text$>$ ::= $<$modifier$> | <$string$>$\\
-$<$modifier$>$ ::= *$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^*$] $|$ *$<$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^*$ \\
+$<$modifier$>$ ::= *$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^+$] $|$ *$<$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^+$ \\
 $<$mod\_fun$>$ ::= HEADER \\
 	$|$ SUBHEADER \\
 	$|$ SECTION \\
@@ -147,14 +147,14 @@ $<$mod\_fun$>$ ::= HEADER \\
 	$|$ UNDERLINE \\
 	$|$ LINK \\
 ~\\
-$<$string$>$ ::=  $<$str\_char$>^*$ \\
+$<$string$>$ ::=  $<$str\_char$>^+$ \\
 $<$str\_char$>$ ::= $c \in \{\text{all characters}\} \wedge c \not\in \{\text{\textbackslash n, *, [, ]}\}$\\
 
 \subsection*{Semantics}
 
 \subsubsection*{Expression}
 \textbf{Syntax}: 
-$<$line$>^*$
+$<$line$>^+$
 
 \textbf{Abstract Syntax}:
 Expression of Line list
@@ -168,9 +168,9 @@ An expression is simply a list of lines. Each CAREER ast is composed of one expr
 
 \subsubsection*{Line}
 \textbf{Syntax}: 
-*ITEM\textvisiblespace$<$formatted\_text$>^*$ \textbackslash n \\
-$|$ *SUBSECTION\_TITLE \textvisiblespace$<$subsection\_content$>^*$ \textbackslash n \\
-$| <$formatted\_text$>^*$ \textbackslash n
+*ITEM\textvisiblespace$<$formatted\_text$>^+$ \textbackslash n \\
+$|$ *SUBSECTION\_TITLE \textvisiblespace$<$subsection\_content$>^+$ \textbackslash n \\
+$| <$formatted\_text$>^+$ \textbackslash n
 
 \textbf{Abstract Syntax}:
 Line of FormattedText list
@@ -212,7 +212,7 @@ Item is a special modifier that puts an entire line into bullet point format. Be
 
 \subsubsection*{Subsection Title Modifier}
 \textbf{Syntax}: 
-*SUBSECTION\_TITLE \textvisiblespace $<$string$>$ $|$ 1-3 * [$<$string$>$]
+*SUBSECTION\_TITLE \textvisiblespace $<$string$>$ $|$ 1-3 [$<$string$>$]
 
 \textbf{Abstract Syntax}: 
 Modifier of string * (String list)
@@ -226,7 +226,7 @@ The subsection title modifier is another special modifier. This modifier can als
 
 \subsubsection*{Modifier}
 \textbf{Syntax}: 
-*$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^*$]$|$$<$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^*$ 
+*$<$mod\_fun$>$\textvisiblespace[$<$formatted\_text$>^+$]$|$$<$mod\_fun$>$\textvisiblespace$<$formatted\_text$>^+$ 
 
 \textbf{Abstract Syntax}: 
 Modifier of String * (FormattedText list)
@@ -240,7 +240,7 @@ A modifier stores some modifying command and a list of formatted texts to apply 
 
 \subsubsection*{Modifying Function}
 \textbf{Syntax}: 
-HEADER | SUBHEADER | SECTION | BOLD | UNDERLINE | LINK
+HEADER $|$ SUBHEADER $|$ SECTION $|$ BOLD $|$ UNDERLINE $|$ LINK
 
 \textbf{Abstract Syntax}: 
 string
