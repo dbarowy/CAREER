@@ -1,0 +1,11 @@
+*HEADER Harry Albert
+*SUBHEADER (111) 111-1111
+*SUBHEADER hsa1@williams.edu
+
+*SECTION Education
+*ITEM Williams College, 2025, anticipated B.A. with double major in Computer Science & Philosophy
+*ITEM Lenox Memorial Middle & High School, 2020
+
+*SECTION Employment
+*ITEM *BOLD [Software Engineer @ Cadence Effects: ] Cadence Effects is a VFX company based in New Lebanon, NY. I took a gap year to work as a full time software engineer at Cadence
+*ITEM. *BOLD [Programming Consultant @ Plexus Notes] Plexus is a smart note taking startup founded by a Williams College alumnus. At Plexus I created a chrome extension to improve usability.

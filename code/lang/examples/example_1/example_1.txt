@@ -1,0 +1,10 @@
+*HEADER Harry Albert
+
+*BOLD Education
+*ITEM Lenox Memorial High School, class of 2020
+*ITEM Lenox Memorial Middle School
+
+*BOLD Work Experience
+*ITEM Life guard for Tanglewood
+*ITEM Food service worker for Tanglewood
+*ITEM Volunteered for Kid's Place in Pittsfield

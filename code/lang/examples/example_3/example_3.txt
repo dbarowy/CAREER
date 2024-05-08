@@ -1,0 +1,23 @@
+*HEADER Harry Albert 
+*SUBHEADER (413)770-6129, HarryAlbert364@gmail.com 
+*SUBHEADER *LINK[https://harryalbert.dev], *LINK[https://www.linkedin.com/in/harry-albert/] 
+
+*SECTION Education 
+*SUBSECTION_TITLE [Williams, MA] [Williams College] [Fall 2021 – May 2025] 
+*ITEM anticipated B.A. with double major in Computer Science & Philosophy 
+*ITEM Teaching Assistant for introductory and upper-level CS courses over five semesters 
+
+*SECTION Employment
+*SUBSECTION_TITLE [Software Engineer, Intern] [Bubble] [Summer 2023] 
+Bubble is a no-code web development platform. I worked on the Growth Team 
+*ITEM Ideated and executed project to refresh new hire onboarding, used by all new hires at Bubble, and created universal set of standards for writing and maintaining documentation 
+*ITEM Contributed to multiple successful experiments, including improving the editor UI and user journey 
+
+*SUBSECTION_TITLE [Software Engineer, Intern] [Meta] [Summer 2022] 
+Service Efficiency & Capacity Tooling Team 
+*ITEM Created two dynamic data visualization projects used by many engineers outside of the team 
+*ITEM Interviewed Meta engineers and gathered feedback in order to tailor designs to, and advocate for, their needs 
+
+*SECTION Projects 
+*ITEM *BOLD [*UNDERLINE ML Lung Cancer Prediction Tool]: Created a neural network to predict lung cancer based on several easily self-diagnosable conditions. Published a website where users can interact with this model to democratize access and allow users to play with the model. Available at *LINK[https://lung-cancer-risk-assessment-tool.vercel.app/]. 
+*ITEM *BOLD [*UNDERLINE Booktrak]: Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. View a demo video at *LINK[https://drive.google.com/file/d/1y5jxcYpGfvBr2p4P4GuF56aErHf5KXS2/view?usp=sharing]. 
