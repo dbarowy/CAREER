@@ -212,7 +212,7 @@ let get_output_page_length (output: string) =
         None
 
 (* 
-    Compile ast to .tex file, and compile .tex file using pdflated
+    Compile ast to .tex file, and compile .tex file using pdflatex
     if the user has pdflatex installed.
     Automatically re-compile with a smaller font (down to size 8 font)
     if the resume pdf is over 1 page long.
