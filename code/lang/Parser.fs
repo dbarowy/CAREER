@@ -48,7 +48,7 @@ let rec formattedTextsToString fs =
     match fs with
     | String(s) :: fs' -> s + (formattedTextsToString fs')
     | Modifier(_) :: _ ->
-        printf "Uh oh, an error occurred"
+        printf "Uh oh, something went wrong."
         exit 1
     | [] -> ""
 

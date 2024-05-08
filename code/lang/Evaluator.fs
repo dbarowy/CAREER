@@ -118,7 +118,7 @@ let rec evalSubsectionTitle (formattedTexts: FormattedText list) =
         match texts with
         | String(s) :: texts' -> s :: textsToString texts'
         | _ :: texts' ->
-            printfn "Subsection Titles should only contain strings (no modifiers)"
+            printfn "LaTeX compilation failed: Subsection Titles should only contain strings (no modifiers)"
             exit 1
         | [] -> []
 
@@ -154,7 +154,7 @@ let rec evalSubsectionTitle (formattedTexts: FormattedText list) =
             + (sprintf "\\textbf{%s}\n" stringTexts[2])
             + "\end{minipage}%\n"
         | _ ->
-            printfn "Subsection Titles should have between 1 and 3 items"
+            printfn "LaTeX compilation failed: Subsection Titles must have between 1 and 3 items"
             exit 1
 
     "\\begin{tabular}{@{}p{\\textwidth}}"
@@ -217,7 +217,13 @@ let get_output_page_length (output: string) =
     Automatically re-compile with a smaller font (down to size 8 font)
     if the resume pdf is over 1 page long.
 *)
-let rec compile_output (lines: Line list) (list_caps: ModuleCap list) (file_name: string) (font_size: int) =
+let rec compile_output
+    (lines: Line list)
+    (list_caps: ModuleCap list)
+    (file_name: string)
+    (font_size: int)
+    (print_info: bool)
+    =
     // latex preamble with correct font size
     let formatted_preamble =
         doc_preamble.Replace("documentclass[font_size]", (sprintf "documentclass[%dpt]" font_size))
@@ -225,7 +231,14 @@ let rec compile_output (lines: Line list) (list_caps: ModuleCap list) (file_name
     // create formatted latex file, output to filename.tex
     let res = formatted_preamble + (evalLines lines list_caps) + doc_ending
     let tex_file_name = file_name.Replace(".txt", ".tex")
+
+    if print_info then
+        printfn "Compiling LaTeX to %s..." tex_file_name
+
     System.IO.File.WriteAllText(tex_file_name, res)
+
+    if print_info then
+        printfn "CARRER resume succesfully compiled to %s\n" tex_file_name
 
     // test if user has pdflatex installed
     let test_for_pdflatex =
@@ -233,6 +246,11 @@ let rec compile_output (lines: Line list) (list_caps: ModuleCap list) (file_name
 
     // user hsa pdflatex installed
     if test_for_pdflatex.StandardOutput.StartsWith("pdfTeX") then
+        let pdf_file_name = file_name.Replace(".txt", ".pdf")
+
+        if print_info then
+            printfn "Compiling PDF to %s..." pdf_file_name
+
         let dir_path = Path.GetDirectoryName(file_name)
 
         let output_command =
@@ -247,29 +265,31 @@ let rec compile_output (lines: Line list) (list_caps: ModuleCap list) (file_name
 
         if compile_res.StandardOutput.Contains("Fatal error occurred") then
             printfn "Uh oh, something went wrong with your resume compilation!"
-            printfn "Run `pdflatex %s` in the shell to get more info on the issue." tex_file_name
+            printfn "Run `pdflatex %s` in the shell to get more info on this issue." tex_file_name
             exit 1
         else
             let res = get_output_page_length compile_res.StandardOutput
 
-            let sys_message =
-                sprintf "CARRER resume succesfully compiled to %s" (file_name.Replace(".txt", ".pdf"))
+            let sys_message = sprintf "PDF succesfully compiled to %s" pdf_file_name
 
             match res with
             | Some(num) ->
                 // any font size less than 8 isn't supported by latex (and would probably look bad anyways)
                 if num > 1 && font_size > 8 then
-                    compile_output lines list_caps file_name (font_size - 1)
+                    printfn
+                        "\nPDF compilation temporarily halted, Reducing font size to %d to hopefully fit PDF on one page...\n"
+                        (font_size - 1)
+
+                    compile_output lines list_caps file_name (font_size - 1) false
                 else
                     printfn "%s" sys_message
             | None -> printfn "%s" sys_message
     else
-        printfn "CARRER resume succesfully compiled to %s" tex_file_name
-        printfn "Download pdflatex (or use overleaf) to compile %s" tex_file_name
+        printfn "Download pdflatex, or use overleaf online, to compile %s" tex_file_name
 
 (* evaluate txt file and convert to latex, compile latex if possible *)
 let eval (ast: Expression) (file_name: string) : unit =
     let list_caps = find_list_caps ast
 
     match ast with
-    | Lines(lines) -> compile_output lines list_caps file_name 10
+    | Lines(lines) -> compile_output lines list_caps file_name 10 true
