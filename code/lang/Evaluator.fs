@@ -253,12 +253,12 @@ let rec compile_output
     let tex_file_name = file_name.Replace(".txt", ".tex")
 
     if print_info then
-        printfn "Compiling LaTeX to %s..." tex_file_name
+        printfn "Compiling AST to LaTeX in %s..." tex_file_name
 
     System.IO.File.WriteAllText(tex_file_name, res)
 
     if print_info then
-        printfn "CARRER resume succesfully compiled to %s\n" tex_file_name
+        printfn "AST succesfully compiled to LaTeX in %s\n" tex_file_name
 
     // test if user has pdflatex installed
     let test_for_pdflatex =
@@ -269,7 +269,7 @@ let rec compile_output
         let pdf_file_name = file_name.Replace(".txt", ".pdf")
 
         if print_info then
-            printfn "Compiling PDF to %s..." pdf_file_name
+            printfn "Compiling LaTeX to PDF in %s..." pdf_file_name
 
         let dir_path = Path.GetDirectoryName(file_name)
 
@@ -290,14 +290,14 @@ let rec compile_output
         else
             let res = get_output_page_length compile_res.StandardOutput
 
-            let sys_message = sprintf "PDF succesfully compiled to %s" pdf_file_name
+            let sys_message = sprintf "LaTeX succesfully compiled to PDF in %s" pdf_file_name
 
             match res with
             | Some(num) ->
                 // any font size less than 8 isn't supported by latex (and would probably look bad anyways)
                 if num > 1 && font_size > 8 then
                     printfn
-                        "\nPDF compilation temporarily halted, Reducing font size to %d to hopefully fit PDF on one page...\n"
+                        "\LATEX compilation temporarily halted, Reducing font size to %d to hopefully fit PDF on one page...\n"
                         (font_size - 1)
 
                     compile_output lines list_caps file_name (font_size - 1) false
