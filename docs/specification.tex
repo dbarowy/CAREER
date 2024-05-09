@@ -63,20 +63,20 @@
 \maketitle
 
 \subsection*{Introduction}
-Creating a beautiful resume is often tedious and time consuming, but this annoying task is unfortunately extremely important. Making your resume look professional and easily readable can be the difference between a recruiter considering you for a job and throwing your application away. Formatting a resume well entails taking the time to organize your experience, skills, and interests in an aesthetically pleasing way using an often uncooperative word editing software. This means that making a resume can be both time consumign and painful, while still mandatory for career goals. \\
+Creating a beautiful resume is often tedious and time consuming, but this annoying task is unfortunately extremely important. Making your resume appear professional and easily readable can be the difference between a recruiter considering you for a job and throwing your application away. Formatting a resume well requires taking the time to organize your experience, skills, and interests in an aesthetically pleasing layout using an often uncooperative word editing software. That is, until you start using CAREER. \\
 
-CAREER solves this issue by automatically formatting your information for you, taking as input some simple text and outputting a well designed resume. CAREER will always output a visually pleasing and readable product, without the fuss and frustration of actually formatting everything yourself.  This also allows for the easy modification of one's resume without the need to go back and reformat everything. In summary, CAREER saves time by making resume creation a breeze, democratizing quality resume creation by putting a well formatted resume at anyone's fingertips. \\
+CAREER solves the chore of resume formatting by automatically formatting your information for you, taking as input some simple text and outputting a well designed resume. CAREER will always output a visually pleasing and readable product without the fuss and frustration of actually formatting everything yourself.  This also allows for the easy modification of your resume without the need to go back and reformat everything. CAREER saves time by making resume creation a breeze, democratizing quality resume creation by putting a well formatted resume at anyone's fingertips. \\
 
-Compiling a CAREER formatted text file will result in a well formatted LaTeX file, with the same name as the inputted text file and in the same location. If you have pdflatex installed (\url{https://tug.org/texlive/}), this LaTeX file will be automatically compiled to a pdf file (again, with the same name and in the same location as the inputted text file). You can also copy and paste the resulting LaTeX file into \href{https://www.overleaf.com}{overleaf} if you don't want to download a compiler.
+Compiling a CAREER formatted text file will result in a well formatted LaTeX file, with the same name as the inputted text file and in the same location. If you have \href{https://tug.org/texlive/}{pdflatex} installed, this LaTeX file will be automatically compiled to a pdf file (again, with the same name and in the same location as the inputted text file). You can also copy and paste the resulting LaTeX file into \href{https://www.overleaf.com}{overleaf} if you don't want to download a compiler.
 
 \subsection*{Design Principles}
-The main goal of CAREER's design is to be easily readable and modifiable by the user. Any user who has skimmed over CAREER's documentation should be able to easily read and understand a resume written in CAREER. Users should be able to go back to their resume document after not looking at it for a year and quickly find and update whatever has changed in that time. This means that all of CAREER's commands and functions should be easily readable and understandable, ideally with little reference to the documentation. The other main design principle guiding CAREER is conciceness. One of the problems CAREER is solving is that resume writing is tedious and time consuming. Requiring the user to write lots of boiler plate code to create a CAREER resume would not fix this problem.
+The main goal of CAREER's design is to be easily readable and modifiable by the user. Any user who has skimmed over CAREER's documentation should be able to read and understand a resume written in CAREER. Users should be able to go back to their CAREER document after not looking at it for a while and quickly find and update whatever has changed in that time. This means that all of CAREER's commands and functions should be easily readable and understandable, ideally with little reference to the documentation. The other main design principle guiding CAREER is conciceness. One of the problems CAREER is solving is that resume writing is tedious and time consuming. Requiring the user to write lots of boiler plate code to create a CAREER resume would not fix this problem.
 
 \subsection*{Examples}
 \begin{center}
 	\textbf{Example 1:}
 \end{center}
-This is an example of a very simple resume that one could imagine a higschooler making. While this resume is very spare, it is still well formatted, and could serve as a good starting point to build off of in the future.\\
+This is an example of a very simple resume that one could imagine a highschooler making. While this resume is very sparse, it is still well formatted, and could serve as a good starting point to build off of in the future.\\
 \textbf{To run: } Go into `./code/lang` and run `dotnet run ./examples/example\_1/example\_1.txt` (Note: when you copy and paste from latex, the underscores are replaced with spaces. Make sure to include the above underscores in your terminal command).\\
 ~\\
 *HEADER Harry Albert \\
@@ -94,7 +94,7 @@ This is an example of a very simple resume that one could imagine a higschooler 
 \begin{center}
 	\textbf{Example 2:}
 \end{center}
-This example program is a more complex iteration of the above problem. One might imagine this as the second version of a student's resume once they've entered college. This example uses a bit more of the formatting options available in CAREER and is thus more complex, but still very readable. \\
+This example program is a more complex iteration of the above resume. One might imagine this as the second version of a student's resume once they've entered college. This example uses a few more of the formatting options available in CAREER and is thus more complex, but still very readable. \\
 \textbf{To run: } Go into `./code/lang` and run `dotnet run ./examples/example\_2/example\_2.txt` (Note: when you copy and paste from latex, the underscores are replaced with spaces. Make sure to include the above underscores in your terminal command).\\
 ~\\
 *HEADER Harry Albert \\
@@ -109,7 +109,7 @@ This example program is a more complex iteration of the above problem. One might
 \begin{center}
 	\textbf{Example 3:}
 \end{center}
-This final example makes use of all of the functionality available in CAREER to make a complex and well formatted resume. However, this resume is still very readable and editable over time. One could imagine this as the resume of a graduating college student or working professional. This example is actually a shortened version of my Resume. If you want to see a full version of this resume written and compiled with CAREER, go to `./code/lang/examples/resume`. \\
+This final example makes use of all of the functionality available in CAREER to make a complex and well formatted resume. However, this resume is still very readable and editable over time. One could imagine this as the resume of a graduating college student or working professional. This example is actually a shortened version of my resume. If you want to see a full version of this resume written and compiled with CAREER, go to `./code/lang/examples/resume`. \\
 \textbf{To run: } Go into `./code/lang` and run `dotnet run ./examples/example\_3/example\_3.txt` (Note: when you copy and paste from latex, the underscores are replaced with spaces. Make sure to include the above underscores in your terminal command).\\
 ~\\
 *HEADER Harry Albert \\
@@ -121,7 +121,7 @@ This final example makes use of all of the functionality available in CAREER to 
 *ITEM anticipated B.A. with double major in Computer Science \& Philosophy \\
 *ITEM Teaching Assistant for introductory and upper-level CS courses over five semesters \\
 ~\\
-*SECTION Employment
+*SECTION Employment \\
 *SUBSECTION\_TITLE [Software Engineer, Intern] [Bubble] [Summer 2023] \\
 Bubble is a no-code web development platform. I worked on the Growth Team \\
 *ITEM Ideated and executed project to refresh new hire onboarding, used by all new hires at Bubble, and created universal set of standards for writing and maintaining documentation \\
@@ -137,7 +137,9 @@ Service Efficiency \& Capacity Tooling Team \\
 *ITEM *BOLD [*UNDERLINE Booktrak]: Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. *LINK[View a demo video here][https://drive.google.com/file/d/1y5jxcYpGfvBr2p4P4GuF56aErHf5KXS2/view?usp=sharing]. \\
 
 \subsection*{Language Concepts}
-The core concept of this language is that there are modifiers and text. Text is a primitive, and it is defined as any string that is not a modifier. For example,  in the line "HEADER Harry Albert," "Harry Albert" is the text. Modifiers are (conventionally all caps) functions, indiciated by *, that change how text is displayed. For example, the SECTION modifier bolds the text that follows it and adds a horizontal line above it to indicate a new section. Ideally, users will be able to create their own modifiers to make the language more groweable. The ITEM function is a special modifier function that can only be applied to the start of a line. Finally, modifiers can be stacked. For example, ITEM creates a bullet pointed text, and BOLD (used within an item) creates a bolded piece of text. When brackets are included after a modifier, the modifier will apply only to the text included in the brackets. If brackets are not included, the modifier will apply to all text until a new line.
+The core concepts of this language are modifiers and text. Text is a primitive, and it is defined as any string that is not a modifier (and does not have a few specific special characters reserved for CAREER). For example,  in the line "*HEADER Harry Albert," "Harry Albert" is the text. Modifiers are (conventionally all caps) functions, indicated by a *, that change how text is displayed. For example, the SECTION modifier bolds the text that follows it and adds a horizontal line above it to indicate a new section. \\
+There are a few special modifiers. ITEM is a special modifier that can only be applied to the start of a line (as it's hard to imagine a bullet point being applied to only part of a line). SUBSECTION\_TITLE is a modifier that can also be applied to the start of a line, and can take 1-3 arguments. These arguments must be basic text (not modified). Finally, LINK is a special modifier that can be applied anywhere and can take either 1 or 2 arguments. \\
+Modifiers can be stacked. For example, ITEM creates bullet pointed text, and BOLD (used within an item) creates a bolded piece of text. When brackets are included after a modifier, the modifier will apply only to the text included in the brackets. If brackets are not included, the modifier will apply to all text until a new line. To give multiple arguments to special modifiers, just use multiple brackets right next to eachother.
 
 \subsection*{Formal Syntax}
 
