@@ -1,0 +1,3 @@
+*LINK https://harryalbert.dev
+*LINK [https://harryalbert.dev]
+*LINK [my website][https://harryalbert.dev]

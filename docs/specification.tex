@@ -134,7 +134,7 @@ Service Efficiency \& Capacity Tooling Team \\
 ~\\
 *SECTION Projects \\
 *ITEM *BOLD [*UNDERLINE ML Lung Cancer Prediction Tool]: Created a neural network to predict lung cancer based on several easily self-diagnosable conditions. Published a website where users can interact with this model to democratize access and allow users to play with the model. Available at *LINK[https://lung-cancer-risk-assessment-tool.vercel.app/]. \\
-*ITEM *BOLD [*UNDERLINE Booktrak]: Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. View a demo video at *LINK[https://drive.google.com/file/d/1y5jxcYpGfvBr2p4P4GuF56aErHf5KXS2/view?usp=sharing]. \\
+*ITEM *BOLD [*UNDERLINE Booktrak]: Independently designed and created Booktrak for WSO (student run website for Williams College). Booktrak is a platform where Williams students can buy and sell used books, and link their book listings to specific classes in order to better facilitate used book sales. *LINK[View a demo video here][https://drive.google.com/file/d/1y5jxcYpGfvBr2p4P4GuF56aErHf5KXS2/view?usp=sharing]. \\
 
 \subsection*{Language Concepts}
 The core concept of this language is that there are modifiers and text. Text is a primitive, and it is defined as any string that is not a modifier. For example,  in the line "HEADER Harry Albert," "Harry Albert" is the text. Modifiers are (conventionally all caps) functions, indiciated by *, that change how text is displayed. For example, the SECTION modifier bolds the text that follows it and adds a horizontal line above it to indicate a new section. Ideally, users will be able to create their own modifiers to make the language more groweable. The ITEM function is a special modifier function that can only be applied to the start of a line. Finally, modifiers can be stacked. For example, ITEM creates a bullet pointed text, and BOLD (used within an item) creates a bolded piece of text. When brackets are included after a modifier, the modifier will apply only to the text included in the brackets. If brackets are not included, the modifier will apply to all text until a new line.
@@ -148,13 +148,17 @@ $<$line\_content$>$ ::= *ITEM\textvisiblespace$<$formatted\_text$>^+$ \\
 	$| <$formatted\_text$>^+$ \\
 $<$subsection\_content$>$ ::= $<$string$>$ $|$ [$<$string$>$] $|$ [$<$string$>$][$<$string$>$] $|$ [$<$string$>$][$<$string$>$][$<$string$>$] \\
 $<$formatted\_text$>$ ::= $<$modifier$> | <$string$>$\\
-$<$modifier$>$ ::= *$<$modifying\_function$>$\textvisiblespace[$<$formatted\_text$>^+$] $|$ *$<$modifying\_function$>$\textvisiblespace$<$formatted\_text$>^+$ \\
+$<$modifier$>$ ::= *$<$modifying\_function$>$\textvisiblespace[$<$formatted\_text$>^+$] \\
+$|$ *$<$modifying\_function$>$\textvisiblespace$<$formatted\_text$>^+$ \\
+$|$ $<$link\_modifier$>$ \\
+$<$link\_modifier$>$ ::= *LINK\textvisiblespace$<$formatted\_text$>^+$ \\ 
+$|$ *LINK\textvisiblespace[$<$formatted\_text$>^+$] \\
+$|$ *LINK\textvisiblespace[$<$formatted\_text$>^+$]\textvisiblespace[$<$formatted\_text$>^+$] \\
 $<$modifying\_function$>$ ::= HEADER \\
 	$|$ SUBHEADER \\
 	$|$ SECTION \\
 	$|$ BOLD \\
 	$|$ UNDERLINE \\
-	$|$ LINK \\
 ~\\
 $<$string$>$ ::=  $<$str\_char$>^+$ \\
 $<$str\_char$>$ ::= $c \in \{\text{all characters}\} \wedge c \not\in \{\text{\textbackslash n, *, [, ]}\}$\\
@@ -238,7 +242,7 @@ The subsection title modifier is another special modifier. This modifier can als
 
 \subsubsection*{Modifier}
 \textbf{Syntax}: 
-*$<$modifying\_function$>$\textvisiblespace[$<$formatted\_text$>^+$] $|$ $<$modifying\_function$>$\textvisiblespace$<$formatted\_text$>^+$ 
+*$<$modifying\_function$>$\textvisiblespace[$<$formatted\_text$>^+$] $|$ $<$modifying\_function$>$\textvisiblespace$<$formatted\_text$>^+$ $|$ $<$link\_modifier$>$
 
 \textbf{Abstract Syntax}: 
 Modifier of String * (FormattedText list)
@@ -250,15 +254,30 @@ Modifier of String * (FormattedText list)
 A modifier stores some modifying command and a list of formatted texts to apply this modifying command to. Each of these formatted texts must eventually evaluate to a string, and each of the strings in the formatted text list will be combined into one final string. This string will have the modifying function applied to it in the corresponding LaTeX code. For example, the modifying function BOLD applies \textbackslash textbf to all of its inner formatted texts.
 
 
+\subsubsection*{Link Modifier}
+\textbf{Syntax}: *LINK\textvisiblespace$<$formatted\_text$>^+$ \\ 
+$|$ *LINK\textvisiblespace[$<$formatted\_text$>^+$] \\
+$|$ *LINK\textvisiblespace[$<$formatted\_text$>^+$]\textvisiblespace[$<$formatted\_text$>^+$] \\
+
+\textbf{Abstract Syntax}: 
+Modifier of String * (FormattedText list)
+
+\textbf{Prec./Assoc.}: 
+7/left
+
+\textbf{Meaning}:
+The Link modifier is a special modifier that can still be applied anywhere in a line. It is special because it can take either one or two arguments, and modifies its behavior depending on the number of arguments. If the user provides one argument, it is formatted as a link in the final LaTeX. If the user provides two arguments, the first argument is used as the text for the outputted link, and  the second argument is used as the actual destination of the link (the first argument should be some display text, the second a url).
+
+
 \subsubsection*{Modifying Function}
 \textbf{Syntax}: 
-HEADER $|$ SUBHEADER $|$ SECTION $|$ BOLD $|$ UNDERLINE $|$ LINK
+HEADER $|$ SUBHEADER $|$ SECTION $|$ BOLD $|$ UNDERLINE
 
 \textbf{Abstract Syntax}: 
 string
 
 \textbf{Prec./Assoc.}: 
-7/left
+8/left
 
 \textbf{Meaning}:
 A modifying function is a command that tells CAREER how to format some following formatted text. What each of these modifying functions does should be clear from their naming. Modifying functions are preceded by the * character when used in a full modifier. This allows for the distinction between modifying functions and normal strings.
@@ -272,7 +291,7 @@ $<$string$>$
 String of string
 
 \textbf{Prec./Assoc.}: 
-8/left
+9/left
 
 \textbf{Meaning}:
 A string is, as you might expect, a string. It can contain any characters besides \textbackslash n, *, [, and ]. Each of these characters is used for a specific purpose in CAREER and thus cannot be used in basic strings.

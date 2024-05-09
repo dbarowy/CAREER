@@ -103,7 +103,6 @@ let rec evalModifierCommand (command: string) (inner: string) =
     | "ITEM" -> sprintf "\\item %s" inner
     | "BOLD" -> sprintf "\\textbf{%s}" inner
     | "UNDERLINE" -> sprintf "\\underline{%s}" inner
-    | "LINK" -> sprintf "\\url{%s}" inner
     | _ -> inner
 
 (* 
@@ -113,7 +112,7 @@ let rec evalModifierCommand (command: string) (inner: string) =
     3 arguments -> bold text alligned left, bold + underligned text center alligned
                    bold text alligned right
 *)
-let rec evalSubsectionTitle (formattedTexts: FormattedText list) =
+let evalSubsectionTitle (formattedTexts: FormattedText list) =
     let rec textsToString texts =
         match texts with
         | String(s) :: texts' -> s :: textsToString texts'
@@ -167,6 +166,7 @@ let rec evalFormattedTexts (formattedTexts: FormattedText list) =
     let rec evalFormattedText (f: FormattedText) =
         match f with
         | Modifier(s, f) when s = "SUBSECTION_TITLE" -> evalSubsectionTitle f
+        | Modifier(s, f) when s = "LINK" -> evalLink f
         | Modifier(s, f) ->
             let res = evalFormattedTexts f
             evalModifierCommand s res
@@ -176,6 +176,26 @@ let rec evalFormattedTexts (formattedTexts: FormattedText list) =
     | f :: fs' -> evalFormattedText (f) + evalFormattedTexts (fs')
     | [] -> ""
 
+(*
+    evaluate a link.
+    1 argument  -> a simple clickable link
+    2 arguments -> use first argument as display text for the link, 
+                   second argument as link destination
+*)
+and evalLink (formattedTexts: FormattedText list) =
+    match formattedTexts.Length with
+    | 1 ->
+        let s1 = evalFormattedTexts [ formattedTexts[0] ]
+        sprintf "\\url{%s}" s1
+    | 2 ->
+        let s1 = evalFormattedTexts [ formattedTexts[0] ]
+        let s2 = evalFormattedTexts [ formattedTexts[1] ]
+        sprintf "\\href{%s}{%s}" s2 s1
+    | _ ->
+        printfn "the LINK modifier command must have between one and two arguments"
+        exit 1
+
+
 (* 
     convert an entire line to latex code, using recorded list caps
     to add list start/end commmands if that's necessary
@@ -184,7 +204,7 @@ let rec evalLines (lines: Line list) (caps: ModuleCap list) : string =
     match lines, caps with
     | FormattedTexts(line) :: ls', Start :: caps' ->
         "\\vspace{-\\baselineskip}\n"
-        + "\\begin{itemize}[itemsep=0pt, topsep=0pt]\n"
+        + "\\begin{itemize}[noitemsep,nolistsep]\n"
         + (evalFormattedTexts line)
         + "\n"
         + (evalLines ls' caps')

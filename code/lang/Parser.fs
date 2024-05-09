@@ -74,7 +74,6 @@ let modifierFunction =
          <|> pstr "SECTION"
          <|> pstr "BOLD"
          <|> pstr "UNDERLINE"
-         <|> pstr "LINK"
          <!> "modifierFunction")
 
 (* formatted text limited by "" *)
@@ -100,9 +99,20 @@ let subsectionTitleContent =
 let subsectionTitleModifier =
     pseq (pleft subsectionTitleModifierFunction pws0) subsectionTitleContent Modifier
 
+let linkModifyingFunction = pright (pchar '*') (pstr "LINK") <!> "linkModifier"
+
+let linkContent =
+    oneToNRepeats (pleft (pbetween (pchar '[') formattedString (pchar ']')) (pmany0 (pchar ' '))) 2
+    <|> (formattedString |>> (fun (s) -> [ s ]))
+    <!> "linkContent"
+
+let linkModifier =
+    pseq (pleft linkModifyingFunction pws0) linkContent Modifier <!> "linkModifier"
+
 (* general text sequence formatted by some modifier *)
 let modifier =
-    pseq (pleft modifierFunction pws0) (limitedFormattedText <|> (pmany1 formattedText)) Modifier
+    (pseq (pleft modifierFunction pws0) (limitedFormattedText <|> (pmany1 formattedText)) Modifier)
+    <|> linkModifier
     <!> "modifier"
 
 (* either a modified text sequence or a tex formatted string *)
