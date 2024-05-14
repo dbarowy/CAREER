@@ -8,4 +8,4 @@
 
 *SECTION Employment
 *ITEM *BOLD [Software Engineer @ Cadence Effects: ] Cadence Effects is a VFX company based in New Lebanon, NY. I took a gap year to work as a full time software engineer at Cadence
-*ITEM. *BOLD [Programming Consultant @ Plexus Notes] Plexus is a smart note taking startup founded by a Williams College alumnus. At Plexus I created a chrome extension to improve usability.
+*ITEM *BOLD [Programming Consultant @ Plexus Notes] Plexus is a smart note taking startup founded by a Williams College alumnus. At Plexus I created a chrome extension to improve usability.
