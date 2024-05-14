@@ -28,7 +28,7 @@ type TestClass() =
         | None -> Assert.IsTrue(false)
 
     [<TestMethod>]
-    member this.TestStringInterpretation() =
+    member this.TestStringEvaluation() =
         // lots of directory work to find the location of the test input
         let c_dir = System.Environment.CurrentDirectory
         let split_dir = c_dir.Split [| '/' |]

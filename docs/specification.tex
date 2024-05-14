@@ -77,7 +77,8 @@ The main goal of CAREER's design is to be easily readable and modifiable by the 
 	\textbf{Example 1:}
 \end{center}
 This is an example of a very simple resume that one could imagine a highschooler making. While this resume is very sparse, it is still well formatted, and could serve as a good starting point to build off of in the future.\\
-\textbf{To run: } Go into `./code/lang` and run `dotnet run ./examples/example\_1/example\_1.txt` (Note: when you copy and paste from latex, the underscores are replaced with spaces. Make sure to include the above underscores in your terminal command).\\
+
+\textbf{To run: } Go into `./code/lang` and run `dotnet run ./examples/example\_1/example\_1.txt` (Note: when you copy and paste from latex, the underscores are replaced with spaces. Make sure to include the above underscores in your terminal command). This will output a .tex file (and a pdf if you have pdflatex installed) in the same folder and with the same name.\\
 ~\\
 *HEADER Harry Albert \\
 ~\\
@@ -95,8 +96,9 @@ This is an example of a very simple resume that one could imagine a highschooler
 	\textbf{Example 2:}
 \end{center}
 This example program is a more complex iteration of the above resume. One might imagine this as the second version of a student's resume once they've entered college. This example uses a few more of the formatting options available in CAREER and is thus more complex, but still very readable. \\
-\textbf{To run: } Go into `./code/lang` and run `dotnet run ./examples/example\_2/example\_2.txt` (Note: when you copy and paste from latex, the underscores are replaced with spaces. Make sure to include the above underscores in your terminal command).\\
-~\\
+
+\textbf{To run: } Go into `./code/lang` and run `dotnet run ./examples/example\_2/example\_2.txt` (Note: when you copy and paste from latex, the underscores are replaced with spaces. Make sure to include the above underscores in your terminal command). This will output a .tex file (and a pdf if you have pdflatex installed) in the same folder and with the same name. \\
+
 *HEADER Harry Albert \\
 *SUBHEADER (111) 111-1111 \\
 *SUBHEADER hsa1@williams.edu \\
@@ -113,8 +115,9 @@ This example program is a more complex iteration of the above resume. One might 
 	\textbf{Example 3:}
 \end{center}
 This final example makes use of all of the functionality available in CAREER to make a complex and well formatted resume. However, this resume is still very readable and editable over time. One could imagine this as the resume of a graduating college student or working professional. This example is actually a shortened version of my resume. If you want to see a full version of this resume written and compiled with CAREER, go to `./code/lang/examples/resume`. \\
-\textbf{To run: } Go into `./code/lang` and run `dotnet run ./examples/example\_3/example\_3.txt` (Note: when you copy and paste from latex, the underscores are replaced with spaces. Make sure to include the above underscores in your terminal command).\\
-~\\
+
+\textbf{To run: } Go into `./code/lang` and run `dotnet run ./examples/example\_3/example\_3.txt` (Note: when you copy and paste from latex, the underscores are replaced with spaces. Make sure to include the above underscores in your terminal command). This will output a .tex file (and a pdf if you have pdflatex installed) in the same folder and with the same name.\\
+
 *HEADER Harry Albert \\
 *SUBHEADER (413)770-6129, HarryAlbert364@gmail.com \\
 *SUBHEADER *LINK[https://harryalbert.dev], *LINK[https://www.linkedin.com/in/harry-albert/] \\
@@ -141,7 +144,9 @@ Service Efficiency \& Capacity Tooling Team \\
 
 \subsection*{Language Concepts}
 The core concepts of this language are modifiers and text. Text is a primitive, and it is defined as any string that is not a modifier (and does not have a few specific special characters reserved for CAREER). For example,  in the line "*HEADER Harry Albert," "Harry Albert" is the text. Modifiers are (conventionally all caps) functions, indicated by a *, that change how text is displayed. For example, the SECTION modifier bolds the text that follows it and adds a horizontal line above it to indicate a new section. \\
+
 There are a few special modifiers. ITEM is a special modifier that can only be applied to the start of a line (as it's hard to imagine a bullet point being applied to only part of a line). SUBSECTION\_TITLE is a modifier that can also be applied to the start of a line, and can take 1-3 arguments. These arguments must be basic text (not modified). Finally, LINK is a special modifier that can be applied anywhere and can take either 1 or 2 arguments. \\
+
 Modifiers can be stacked. For example, ITEM creates bullet pointed text, and BOLD (used within an item) creates a bolded piece of text. When brackets are included after a modifier, the modifier will apply only to the text included in the brackets. If brackets are not included, the modifier will apply to all text until a new line. To give multiple arguments to special modifiers, just use multiple brackets right next to eachother.
 
 \subsection*{Formal Syntax}
@@ -216,7 +221,7 @@ FormattedText is essentially a container that can store either Modifiers or Stri
 
 \subsubsection*{Item Modifier}
 \textbf{Syntax}: 
-*LINE \textvisiblespace $<$formatted\_text$>$
+*ITEM \textvisiblespace $<$formatted\_text$>^+$
 
 \textbf{Abstract Syntax}: 
 Modifier of string * (FormattedText list)
@@ -225,7 +230,7 @@ Modifier of string * (FormattedText list)
 4/left
 
 \textbf{Meaning}:
-Item is a special modifier that puts an entire line into bullet point format. Because of this, Item (unlike other modifiers) cannot be applied anywhere within a line; it can only be applied at the start of a line. Thus, the line modifier has its own, special syntax that is taken into account by the Line combining form.
+Item is a special modifier that puts an entire line into bullet point format. Because of this, Item (unlike other modifiers) cannot be applied anywhere within a line; it can only be applied at the start of a line. Thus, the item modifier has its own, special syntax that is taken into account by the Line combining form.
 
 
 \subsubsection*{Subsection Title Modifier}
@@ -247,7 +252,9 @@ The subsection title modifier is another special modifier. This modifier can als
 
 \subsubsection*{Modifier}
 \textbf{Syntax}: 
-*$<$modifying\_function$>$\textvisiblespace[$<$formatted\_text$>^+$] $|$ $<$modifying\_function$>$\textvisiblespace$<$formatted\_text$>^+$ $|$ $<$link\_modifier$>$
+*$<$modifying\_function$>$\textvisiblespace[$<$formatted\_text$>^+$] \\
+ $|$ $<$modifying\_function$>$\textvisiblespace$<$formatted\_text$>^+$ \\
+ $|$ $<$link\_modifier$>$
 
 \textbf{Abstract Syntax}: 
 Modifier of String * (FormattedText list)
@@ -256,7 +263,7 @@ Modifier of String * (FormattedText list)
 6/left
 
 \textbf{Meaning}:
-A modifier stores some modifying command and a list of formatted texts to apply this modifying command to. Each of these formatted texts must eventually evaluate to a string, and each of the strings in the formatted text list will be combined into one final string. This string will have the modifying function applied to it in the corresponding LaTeX code. For example, the modifying function BOLD applies \textbackslash textbf to all of its inner formatted texts.
+A modifier stores some modifying command and a list of formatted texts to apply this modifying command to. Each of these formatted texts must eventually evaluate to a string, and each of the strings in the formatted text list will be combined into one final string. This string will have the modifying function applied to it in the corresponding LaTeX code. For example, the modifying function BOLD applies \textbackslash textbf to all of its inner formatted texts. A modifier can be used anywhere within a line of CAREER.
 
 
 \subsubsection*{Link Modifier}
@@ -303,7 +310,7 @@ A string is, as you might expect, a string. It can contain any characters beside
 
 
 \subsection*{Remaining Work}
-There are still some features that would be very valuable to add to CAREER. One such feature would be the ability to set important formatting values, like text size or line spacing, at the top of a CAREER file. This would allow for more customizable resume outputs. The user can do this one layer removed by editing the outputted LaTeX directly, but this removes some of the simplicity and ease of use that CAREER offers. Another valuable additional feature would be customizable modifying functions. Giving the user the ability to create functions that modify text using LaTeX code would, again, make CAREER much more customizable. It would also allow CAREER to grow more easily and naturally over time.
+There are still some features that would be very valuable to add to CAREER. One such feature would be the ability to set important formatting values, like text size or line spacing, at the top of a CAREER file. This would allow for more customizable resume outputs. The user can do this one layer removed by editing the outputted LaTeX directly, but this removes some of the simplicity and ease of use that CAREER offers. Another valuable additional feature would be customizable modifying functions. Giving the user the ability to create functions that modify text using LaTeX code would, again, make CAREER much more customizable. It would also allow CAREER to grow more easily and naturally over time. \\
 
 One feature that I did not implement from my prior draft is comments. The original idea was to allow users to add comments to their resume file in order to keep track of todos or other useful information. While this might have been helpful, it would require reserving another character or set of characters to denote a comment. I decided that reserving another character for this purpose was not worth the functionality that comments would provide. The main point of comments in most languages is to help clarify hard-to-read code, but CAREER should be readable and simple enough that no comments are requird.
 
